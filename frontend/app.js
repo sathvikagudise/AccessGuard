@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsSection = document.getElementById('resultsSection');
 
     // API URL matches Phase 1-4 backend. Using absolute paths for local file:// frontend
-    const API_URL = 'http://127.0.0.1:8000/api/audit';
-    const BATCH_API_URL = 'http://127.0.0.1:8000/api/batch-audit';
+    const API_URL = 'https://accessguard-backend.onrender.com/api/audit';
+    const BATCH_API_URL = 'https://accessguard-backend.onrender.com/api/batch-audit';
 
     // Batch UI Elements
     const batchForm = document.getElementById('batchForm');
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentAuditId) return;
 
         // This triggers the browser native download process hitting our FastAPI backend endpoint.
-        const downloadUrl = `http://127.0.0.1:8000/api/report/${currentAuditId}`;
+        const downloadUrl = `https://accessguard-backend.onrender.com/api/report/${currentAuditId}`;
         window.open(downloadUrl, '_blank');
     });
 
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndRenderHistory() {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/history');
+            const response = await fetch('https://accessguard-backend.onrender.com/api/history');
             const result = await response.json();
             if (result.status === 'error') {
                 throw new Error(result.message || 'Unable to load history');
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <td>${item.medium_count}</td>
                                 <td>${item.low_count}</td>
                                 <td>${new Date(item.timestamp).toLocaleString()}</td>
-                                <td><a href="http://127.0.0.1:8000/api/report/${item.id}" target="_blank">Download</a></td>
+                                <td><a href="https://accessguard-backend.onrender.com/api/report/${item.id}" target="_blank">Download</a></td>
                             </tr>
                         `).join('')}
                     </tbody>
