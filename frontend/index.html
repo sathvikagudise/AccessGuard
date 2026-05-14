@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccessGuard - Real-Time Web Accessibility Audit Platform</title>
+    <!-- Modern Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1>AccessGuard</h1>
+            <p>Real-Time Web Accessibility Intelligence</p>
+
+            <form id="auditForm" class="audit-form glass-panel">
+                <input type="url" id="urlInput" placeholder="https://example.com" required autocomplete="off">
+                <button type="submit" id="submitBtn">
+                    <span class="btn-text">Run Audit</span>
+                </button>
+            </form>
+
+            <form id="batchForm" class="audit-form glass-panel" style="margin-top: 0.7rem;">
+                <textarea id="batchInput" placeholder="https://github.com\nhttps://wikipedia.org\nhttps://example.com" rows="3" required></textarea>
+                <button type="submit" id="batchBtn">
+                    <span class="btn-text">Run Batch Audit</span>
+                </button>
+            </form>
+
+            <button id="refreshHistoryBtn" class="download-btn" style="margin-top: 1rem; font-size: 0.9rem; padding: 0.7rem 1.5rem;">↻ Refresh Audit History</button>
+
+            <div id="loader" class="loader hidden">
+                <div class="spinner"></div>
+                <p>Analyzing live DOM structure...</p>
+            </div>
+
+            <div id="errorMessage" class="error-message hidden"></div>
+        </header>
+
+        <!-- Batch Results Section (Hidden Initially) -->
+        <section id="batchSection" class="results-section hidden">
+            <div class="glass-panel fade-in">
+                <h2>Batch Audit Results</h2>
+                <div id="batchInsights"></div>
+                <div id="batchRanking"></div>
+                <div id="batchList"></div>
+            </div>
+        </section>
+
+        <!-- History Section (Hidden Initially) -->
+        <section id="historySection" class="results-section hidden">
+            <div class="glass-panel fade-in">
+                <h2>Audit History</h2>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </section>
+
+        <!-- Results Section (Hidden Initially) -->
+        <section id="resultsSection" class="results-section hidden">
+
+            <!-- Top Dashboard Stats -->
+            <div class="dashboard-grid">
+                <!-- Score Card -->
+                <div class="glass-panel score-card fade-in">
+                    <h2>Accessibility Score</h2>
+                    <div class="score-display">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="scoreCircle" class="circle" stroke-dasharray="0, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="score-text">
+                            <span id="scoreValue">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issues Card -->
+                <div class="glass-panel stat-card fade-in" style="animation-delay: 0.1s;">
+                    <h3>Total Issues Found</h3>
+                    <div id="totalIssuesValue" class="stat-number">0</div>
+                    <div class="metadata-info" id="scrapedTitle"></div>
+
+                    <!-- NEW PDF DOWNLOAD BUTTON -->
+                    <button id="downloadPdfBtn" class="download-btn hidden"
+                        style="margin-top: 1.5rem; font-size: 0.9rem; padding: 0.75rem 1.5rem;">
+                        ⬇ Download Full PDF
+                    </button>
+
+                </div>
+
+                <!-- Severity Breakdown Cards -->
+                <div class="severity-grid fade-in" style="animation-delay: 0.2s;">
+                    <div class="severity-card critical">
+                        <div class="sev-label">Critical</div>
+                        <div id="countCritical" class="sev-count">0</div>
+                    </div>
+                    <div class="severity-card high">
+                        <div class="sev-label">High</div>
+                        <div id="countHigh" class="sev-count">0</div>
+                    </div>
+                    <div class="severity-card medium">
+                        <div class="sev-label">Medium</div>
+                        <div id="countMedium" class="sev-count">0</div>
+                    </div>
+                    <div class="severity-card low">
+                        <div class="sev-label">Low</div>
+                        <div id="countLow" class="sev-count">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Violations List -->
+            <div class="violations-container glass-panel fade-in" style="animation-delay: 0.3s;">
+                <h2>Identified Violations</h2>
+                <div id="violationsList" class="violations-list">
+                    <!-- Violations injected dynamically here via JS -->
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

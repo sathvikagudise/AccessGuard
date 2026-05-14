@@ -1,0 +1,11 @@
+--- BEFORE SEEDING MOCK DATA ---
+Total Audits: 55
+Trends: {'missing_image_alt': 32, 'input_without_label': 24, 'multiple_h1_tags': 12}
+Dynamic Weights: {'Critical': 18, 'High': 12, 'Medium': 5, 'Low': 2}
+Insights: {'most_common_issue': 'Most frequent issue: missing_image_alt (occurs in 58% of audits)', 'recommendation': 'High priority fix recommended: image accessibility'}
+
+--- AFTER SEEDING MOCK DATA (High failure rate on image/labels) ---
+Total Audits: 60
+Trends: {'missing_image_alt': 37, 'input_without_label': 29, 'multiple_h1_tags': 12}
+Dynamic Weights: {'Critical': 18, 'High': 12, 'Medium': 5, 'Low': 2}
+Insights: {'most_common_issue': 'Most frequent issue: missing_image_alt (occurs in 61% of audits)', 'recommendation': 'High priority fix recommended: image accessibility'}

@@ -1,0 +1,252 @@
+{
+  "status": "success",
+  "data": {
+    "metadata": {
+      "title": "GitHub \u00b7 Change is constant. GitHub keeps you ahead. \u00b7 GitHub",
+      "counts": {
+        "images": 24,
+        "buttons": 46,
+        "inputs": 13,
+        "labels": 6,
+        "headings": 30
+      },
+      "samples": {
+        "images": [
+          "https://github.githubassets.com/assets/particles-170bd1fd231f4669.png",
+          "//images.ctfassets.net/8aevphvgewt8/g1XhuDG7foMyNWIEIpGJj/b40a790b854d0803704deb7905b1bd82/logo-duolingo-14477f9e54a6.svg",
+          "//images.ctfassets.net/8aevphvgewt8/6Qr8Snm4JceoMFRJhapgFa/802ded1d2c486a9d0a4c073d9f8f38f4/logo-gartner-aa8c2e452b64.svg"
+        ],
+        "buttons": [
+          "Toggle navigation",
+          "No text",
+          "Platform"
+        ],
+        "inputs": [
+          "hidden",
+          "text",
+          "hidden"
+        ]
+      }
+    },
+    "violations": [
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "ai_suggestion": "Add meaningful alt text indicating: 'Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow'.",
+        "corrected_html": "<img alt=\"Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "before_html": "<img alt=\"\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "after_html": "<img [[ADDED: alt=\"Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow\"]] aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-SectionTemplate-accordionVisual-image--current\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/1Dt1ncaR6ZM4dQvknFzfBI/e5c2092be",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-SectionTemplate-accordionVisual-image--current\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/1Dt1ncaR6ZM4dQvknFzfBI/e5c2092be",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/1uXZYDy7dMcH9QwxuAU06F/1cb167cc60d725b8cf7089faf9a4ed06/accordion-2-730955545f07.w",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/1uXZYDy7dMcH9QwxuAU06F/1cb167cc60d725b8cf7089faf9a4ed06/accordion-2-730955545f07.w",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/3xzVZaJhqo3B62R8NeHjX2/e37c81e4f26e9dac2aff1f23a0243087/accordion-3-52ca331d22ea.w",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/3xzVZaJhqo3B62R8NeHjX2/e37c81e4f26e9dac2aff1f23a0243087/accordion-3-52ca331d22ea.w",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/3cgNgdKFqflI27vyDh4Gpa/c459dc8690133e7663b8db2626cf2045/accordion-4-a26744b70ff7.w",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/3cgNgdKFqflI27vyDh4Gpa/c459dc8690133e7663b8db2626cf2045/accordion-4-a26744b70ff7.w",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "ai_suggestion": "Add meaningful alt text indicating: 'Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow'.",
+        "corrected_html": "<img alt=\"Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "before_html": "<img alt=\"\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "after_html": "<img [[ADDED: alt=\"Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow\"]] aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "ai_suggestion": "Add meaningful alt text indicating: 'Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow'.",
+        "corrected_html": "<img alt=\"Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "before_html": "<img alt=\"\" aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "after_html": "<img [[ADDED: alt=\"Image depicting Particles 170Bd1Fd231F4669. Image related to Accelerate your entire workflow\"]] aria-hidden=\"true\" class=\"particles\" loading=\"lazy\" src=\"https://github.githubassets.com/assets/particles-170bd1fd231f4669.png\"/>",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-SectionTemplate-accordionVisual-image--current\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/5suLHnkyPm3laA8qENQmMZ/6b267a9e4",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-SectionTemplate-accordionVisual-image--current\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/5suLHnkyPm3laA8qENQmMZ/6b267a9e4",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/20DkYnWbPsbb8mdDnIs32f/a43850b7e0e8e45ec87761d1ba91e19b/accordion-2-c0a62cfc31a1.w",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/20DkYnWbPsbb8mdDnIs32f/a43850b7e0e8e45ec87761d1ba91e19b/accordion-2-c0a62cfc31a1.w",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/39mo3IRGhK995HzuwZANhY/cabfd393551e0d2aae92bc105121ca9c/accordion-3-5d5d222f1830.w",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/39mo3IRGhK995HzuwZANhY/cabfd393551e0d2aae92bc105121ca9c/accordion-3-5d5d222f1830.w",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/7GOAeyecyEQqY12hHwvwXg/69877012458c9d42916b2a18e0e36a37/accordion-4-7abff9233556.w",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/7GOAeyecyEQqY12hHwvwXg/69877012458c9d42916b2a18e0e36a37/accordion-4-7abff9233556.w",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/5m9WKL1QJeiDrnxuL9pBux/f7336610c32283d86c71235c0d54ee16/figma.webp\"/>",
+        "ai_suggestion": "Add meaningful alt text indicating: 'Image depicting Figma. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.'.",
+        "corrected_html": "<img alt=\"Image depicting Figma. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/5m9WKL1QJeiDrnxuL9pBux/f7336610c32283d86c71235c0d54ee16/figma.webp\"/>",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/5m9WKL1QJeiDrnxuL9pBux/f7336610c32283d86c71235c0d54ee16/figma.webp\"/>",
+        "after_html": "<img [[ADDED: alt=\"Image depicting Figma. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.\"]] class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/5m9WKL1QJeiDrnxuL9pBux/f7336610c32283d86c71235c0d54ee16/figma.webp\"/>",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-CustomerStories-logo\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/2xNJHobFMxrvAwj534sNMo/753fcd3beb5fd223d1d2ed918b868a5f/fi",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-CustomerStories-logo\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/2xNJHobFMxrvAwj534sNMo/753fcd3beb5fd223d1d2ed918b868a5f/fi",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/2so1SgbMPgAN2M091ep1YR/3c268f706e7a53fb79276b863e0c9436/mercedes-benz.webp\"/>",
+        "ai_suggestion": "Add meaningful alt text indicating: 'Image depicting Mercedes Benz. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.'.",
+        "corrected_html": "<img alt=\"Image depicting Mercedes Benz. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/2so1SgbMPgAN2M091ep1YR/3c268f706e7a53fb79276b863e0c9436/mercedes-benz.webp\"/>",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/2so1SgbMPgAN2M091ep1YR/3c268f706e7a53fb79276b863e0c9436/mercedes-benz.webp\"/>",
+        "after_html": "<img [[ADDED: alt=\"Image depicting Mercedes Benz. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.\"]] class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/2so1SgbMPgAN2M091ep1YR/3c268f706e7a53fb79276b863e0c9436/mercedes-benz.webp\"/>",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-CustomerStories-logo\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/55wg5e2VhUvAbJBG0coTRy/9ced78d7b1f86bc72f214401ad57e69e/me",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-CustomerStories-logo\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/55wg5e2VhUvAbJBG0coTRy/9ced78d7b1f86bc72f214401ad57e69e/me",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/6qeISSuZ9JWsaytftY1gqk/bd5f4532732d5cf163c8e1a2557f42ba/mercado-libre.webp\"/>",
+        "ai_suggestion": "Add meaningful alt text indicating: 'Image depicting Mercado Libre. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.'.",
+        "corrected_html": "<img alt=\"Image depicting Mercado Libre. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/6qeISSuZ9JWsaytftY1gqk/bd5f4532732d5cf163c8e1a2557f42ba/mercado-libre.webp\"/>",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/6qeISSuZ9JWsaytftY1gqk/bd5f4532732d5cf163c8e1a2557f42ba/mercado-libre.webp\"/>",
+        "after_html": "<img [[ADDED: alt=\"Image depicting Mercado Libre. Image related to From startups to enterprises, GitHub scales with teams of any size in any industry.\"]] class=\"Primer_Brand__Image-module__Image___FgVuK\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/6qeISSuZ9JWsaytftY1gqk/bd5f4532732d5cf163c8e1a2557f42ba/mercado-libre.webp\"/>",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "missing_image_alt",
+        "severity": "Critical",
+        "message": "Image element is missing an 'alt' attribute or it is empty, which is required for screen readers.",
+        "element": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-CustomerStories-logo\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/1kTDnd4nwOET5gPSpPk5z9/dc7d84e7c31e4ece4a9db441728c8e97/me",
+        "ai_suggestion": "Add descriptive alt text describing the purpose of the image.",
+        "corrected_html": "<!-- Add appropriate img with alt tag -->",
+        "before_html": "<img alt=\"\" class=\"Primer_Brand__Image-module__Image___FgVuK lp-CustomerStories-logo\" loading=\"lazy\" src=\"//images.ctfassets.net/8aevphvgewt8/1kTDnd4nwOET5gPSpPk5z9/dc7d84e7c31e4ece4a9db441728c8e97/me",
+        "after_html": "<!-- Add appropriate img with alt tag -->",
+        "change_summary": "Added alt attribute to improve accessibility"
+      },
+      {
+        "rule": "multiple_h1_tags",
+        "severity": "Medium",
+        "message": "Found 4 <h1> tags. Pages should generally have only one main heading for structural clarity.",
+        "element": "Multiple <h1> elements found in document.",
+        "ai_suggestion": "Use only one <h1> as the primary heading. Convert additional <h1> tags to <h2> or lower for proper hierarchy.",
+        "corrected_html": "<!-- Example Conversion -->\n<h2>Your Subheading found in document.</h2>",
+        "before_html": "Multiple <h1> elements found in document.",
+        "after_html": "<!-- Example Conversion -->\n[[CHANGED: <h2>]]Your Subheading found in document.[[CHANGED: </h2>]]",
+        "change_summary": "Adjusted heading hierarchy (h1 -> h2)"
+      }
+    ],
+    "audit_summary": {
+      "score": 0,
+      "total_issues": 18,
+      "severity_breakdown": {
+        "Critical": 17,
+        "High": 0,
+        "Medium": 1,
+        "Low": 0
+      }
+    },
+    "adaptive_insights": {
+      "most_common_issue": "Most frequent issue: missing_image_alt (occurs in 57% of audits)",
+      "recommendation": "High priority fix recommended: image accessibility",
+      "trend_data": {
+        "missing_image_alt": 31,
+        "input_without_label": 24,
+        "multiple_h1_tags": 11
+      }
+    },
+    "id": 55
+  }
+}

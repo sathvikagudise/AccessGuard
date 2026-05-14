@@ -1,0 +1,59 @@
+{
+  "status": "success",
+  "data": {
+    "results": [
+      {
+        "url": "https://github.com/",
+        "score": 0.084,
+        "total_issues": 18,
+        "severity_breakdown": {
+          "Critical": 17,
+          "High": 0,
+          "Medium": 1,
+          "Low": 0
+        }
+      },
+      {
+        "url": "https://wikipedia.org/",
+        "score": 0.067,
+        "total_issues": 0,
+        "severity_breakdown": {},
+        "error": "HTTP Error: 403 - Forbidden",
+        "error_message": "Failed to scrape or process URL"
+      },
+      {
+        "url": "https://example.com/",
+        "score": 95.093,
+        "total_issues": 0,
+        "severity_breakdown": {
+          "Critical": 0,
+          "High": 0,
+          "Medium": 0,
+          "Low": 0
+        }
+      }
+    ],
+    "ranking": [
+      {
+        "url": "https://example.com/",
+        "score": 95.093,
+        "rank": 1
+      },
+      {
+        "url": "https://github.com/",
+        "score": 0.084,
+        "rank": 2
+      },
+      {
+        "url": "https://wikipedia.org/",
+        "score": 0.067,
+        "rank": 3
+      }
+    ],
+    "comparative_insights": {
+      "best_site": "https://example.com/",
+      "worst_site": "https://wikipedia.org/",
+      "average_score": 47.59
+    }
+  }
+}

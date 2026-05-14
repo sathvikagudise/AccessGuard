@@ -1,0 +1,12 @@
+--- TEST 1: Dashboard Context ---
+AI Suggestion: This image appears to represent a banner. Add meaningful alt text such as 'Promotional banner highlighting key content or feature. Image related to System Overview'.
+Corrected: <img alt="Promotional banner highlighting key content or feature. Image related to System Overview" class="hero dashboard-img" src="/assets/dashboard-main.png"/>
+
+--- TEST 2: Logo Context ---
+AI Suggestion: This image appears to represent a logo. Add meaningful alt text such as 'Company logo representing brand identity'.
+Corrected: <img alt="Company logo representing brand identity" id="nav-logo" src="logo.png"/>
+
+--- TEST 3: Generic Context ---
+AI Suggestion: Add meaningful alt text indicating: 'Image depicting Unknown'.
+Corrected: <img alt="Image depicting Unknown" src="unknown.jpg"/>
+

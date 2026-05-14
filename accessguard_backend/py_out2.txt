@@ -1,0 +1,22 @@
+--- TEST 1: missing_image_alt ---
+Before: <img class="hero dashboard-img" src="/assets/dash.png"/>
+After: <img [[ADDED: alt="Promotional banner highlighting key content or feature. Image related to System Overview"]] class="hero dashboard-img" src="/assets/dash.png"/>
+Summary: Added alt attribute to improve accessibility
+
+--- TEST 2: input_without_label ---
+Before: <input class="input-field" name="email_address" type="text"/>
+After: [[ADDED: <label for="email_address">Email Address</label>]]
+<input class="input-field" id="email_address" name="email_address" type="text"/>
+Summary: Added label and associated input field using id
+
+--- TEST 3: missing_html_lang ---
+Before: <html>
+After: <html [[ADDED: lang="en"]]>
+Summary: Added lang attribute to HTML tag
+
+--- TEST 4: skipped_heading_level ---
+Before: <h3>Subtitle</h3>
+After: <!-- Adjusted to maintain hierarchy -->
+<[[CHANGED: h2]]>Subtitle</[[CHANGED: h2]]>
+Summary: Adjusted heading level to maintain logical hierarchy
+

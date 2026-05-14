@@ -1,0 +1,13 @@
+.venv/
+accessguard_backend/accessguard.db
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.db-journal
+.DS_Store
+*.log
+.env
+.vscode/
