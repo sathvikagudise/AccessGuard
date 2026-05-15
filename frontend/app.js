@@ -155,5 +155,3 @@ document.addEventListener('DOMContentLoaded', () => {
         return !!state.auth?.currentUser;
     }
 });
- }
-});
