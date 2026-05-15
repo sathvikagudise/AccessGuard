@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     function init() {
+        console.log('[Dashboard] Initializing AccessGuard Dashboard...');
         initFirebase();
         bindEvents();
         route();
@@ -132,10 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setActiveNav(routeName);
 
         if (routeName === 'dashboard' && isAuthenticated()) {
+            console.log('[Dashboard] Fetching history for dashboard view.');
             fetchAndRenderHistory();
         }
 
         if (routeName === 'history' && isAuthenticated()) {
+            console.log('[Dashboard] Fetching history for history view.');
             fetchAndRenderHistory();
         }
     }
@@ -192,12 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function signOutUser() {
         if (!state.auth) return;
+        console.log('[Dashboard] Signing out user...');
         state.auth.signOut();
-        window.location.href = 'index.html';
+        window.location.href = './index.html';
     }
 
     function handleAuthChange(user) {
         if (user) {
+            console.log('[Dashboard] Auth State: Logged IN as', user.email);
             // User is signed in
             elements.authWelcome.textContent = `Hi, ${user.displayName || 'User'}`;
             elements.authAvatar.textContent = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
@@ -205,8 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.authWelcome.classList.remove('hidden');
             elements.authButton.textContent = 'Logout';
         } else {
+            console.log('[Dashboard] Auth State: Logged OUT. Redirecting to landing page.');
             // User is signed out - redirect to landing page
-            window.location.href = 'index.html';
+            window.location.href = './index.html';
         }
     }
 
@@ -261,16 +267,36 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ url })
         })
         .then(response => {
+            console.log('[Dashboard] Audit response status:', response.status);
             if (!response.ok) {
                 throw new Error(`Server returned ${response.status}: Ensure the backend is running.`);
             }
             return response.json();
         })
-        .then(data => {
+        .then(responseData => {
+            console.log('[Dashboard] Raw Audit Payload:', responseData);
+            if (responseData.status === 'error') {
+                throw new Error(responseData.message || 'Backend API error');
+            }
+            
+            const payload = responseData.data || responseData;
+            
+            const formattedData = {
+                score: payload.audit_summary?.score,
+                violations: payload.violations?.map(v => ({
+                    ...v,
+                    suggestion: v.ai_suggestion || v.suggestion
+                })) || [],
+                remediation: payload.violations?.filter(v => v.before_html && v.after_html).map(v => ({
+                    original: v.before_html,
+                    suggestion: v.after_html
+                })) || []
+            };
+
             clearInterval(progressInterval);
             elements.progressFill.style.width = '100%';
             setTimeout(() => {
-                renderAuditResult(data, url);
+                renderAuditResult(formattedData, url);
                 state.runningAudit = false;
                 elements.submitBtn.disabled = false;
                 elements.submitBtn.textContent = 'Run Audit';
@@ -279,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             clearInterval(progressInterval);
-            console.error('Audit error:', error);
+            console.error('[Dashboard] API Failure - Audit error:', error);
             alert('Audit failed. Please try again.');
             state.runningAudit = false;
             elements.submitBtn.disabled = false;
@@ -301,19 +327,34 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ urls })
         })
         .then(response => {
+            console.log('[Dashboard] Batch Audit response status:', response.status);
             if (!response.ok) {
                 throw new Error(`Server returned ${response.status}: Ensure the backend is running.`);
             }
             return response.json();
         })
-        .then(data => {
-            renderBatchResult(data);
+        .then(responseData => {
+            console.log('[Dashboard] Raw Batch Payload:', responseData);
+            if (responseData.status === 'error') {
+                throw new Error(responseData.message || 'Backend API error');
+            }
+            
+            const payload = responseData.data || responseData;
+            const formattedBatchData = {
+                results: payload.results,
+                ranking: payload.ranking,
+                insights: payload.comparative_insights ? 
+                    `Best Site: ${payload.comparative_insights.best_site} | Avg Score: ${payload.comparative_insights.average_score}` 
+                    : ''
+            };
+            
+            renderBatchResult(formattedBatchData);
             state.runningAudit = false;
             elements.batchBtn.disabled = false;
             elements.batchBtn.textContent = 'Run Batch Audit';
         })
         .catch(error => {
-            console.error('Batch audit error:', error);
+            console.error('[Dashboard] API Failure - Batch audit error:', error);
             alert('Batch audit failed. Please try again.');
             state.runningAudit = false;
             elements.batchBtn.disabled = false;

@@ -19,12 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
         authModal: document.getElementById('authModal'),
         closeAuthModal: document.getElementById('closeAuthModal'),
         authWelcome: document.getElementById('authWelcome'),
-        authAvatar: document.getElementById('authAvatar')
+        authAvatar: document.getElementById('authAvatar'),
+        heroStartBtn: document.getElementById('heroStartBtn')
     };
 
     init();
 
     function init() {
+        console.log('[App] Initializing AccessGuard Landing Page');
         initFirebase();
         bindEvents();
         route();
@@ -63,6 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeAuthModal();
             }
         });
+
+        if (elements.heroStartBtn) {
+            elements.heroStartBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                console.log('[App] Start Audit clicked. Navigating to dashboard...');
+                window.location.href = './dashboard.html';
+            });
+        }
     }
 
     function route() {
@@ -73,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             routeName = 'home';
             window.location.hash = '#home';
         }
+        console.log('[App] Routing to section:', routeName);
 
         updateActiveSection(routeName);
         setActiveNav(routeName);
@@ -135,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleAuthChange(user) {
         if (user) {
+            console.log('[App] Auth State: Logged IN as', user.email);
             // User is signed in
             elements.authWelcome.textContent = `Hi, ${user.displayName || 'User'}`;
             elements.authAvatar.textContent = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
@@ -142,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.authWelcome.classList.remove('hidden');
             elements.authButton.textContent = 'Logout';
         } else {
+            console.log('[App] Auth State: Logged OUT');
             // User is signed out
             elements.authWelcome.textContent = '';
             elements.authAvatar.textContent = '';
