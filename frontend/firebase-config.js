@@ -1,10 +1,17 @@
-﻿// Replace these values with your Firebase configuration.
-// Keep this file in the frontend folder and do not commit actual keys to public repos.
-window.FIREBASE_CONFIG = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+﻿// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBbcPxLYUEUKf8pLac_--xpoRPzzuGgicI",
+    authDomain: "accessguard-cda57.firebaseapp.com",
+    projectId: "accessguard-cda57",
+    storageBucket: "accessguard-cda57.firebasestorage.app",
+    messagingSenderId: "833285517019",
+    appId: "1:833285517019:web:83ed48093fcd50563666fe"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
