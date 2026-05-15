@@ -65,12 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bindEvents();
         route();
         window.addEventListener('hashchange', route);
-
-        // Check authentication immediately
-        if (!isAuthenticated()) {
-            window.location.href = 'index.html';
-            return;
-        }
     }
 
     function initFirebase() {
