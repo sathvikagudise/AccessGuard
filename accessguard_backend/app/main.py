@@ -26,6 +26,13 @@ def startup_event():
     """
     init_db()
 
+@app.get("/api/health")
+async def health_check():
+    """
+    Health check endpoint for Render deployment verification.
+    """
+    return {"status": "ok", "service": "AccessGuard Backend"}
+
 class AuditRequest(BaseModel):
     url: HttpUrl
 

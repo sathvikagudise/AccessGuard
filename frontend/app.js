@@ -1,288 +1,702 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const auditForm = document.getElementById('auditForm');
-    const urlInput = document.getElementById('urlInput');
-    const submitBtn = document.getElementById('submitBtn');
-    const loader = document.getElementById('loader');
-    const errorMessage = document.getElementById('errorMessage');
-    const resultsSection = document.getElementById('resultsSection');
+/*
+  AccessGuard landing page application
+  Handles routing between sections and Firebase authentication.
+*/
 
-    // API URL matches Phase 1-4 backend. Using absolute paths for local file:// frontend
+document.addEventListener('DOMContentLoaded', () => {
+    const state = {
+        auth: null
+    };
+
+    const elements = {
+        pageSections: document.querySelectorAll('.route-section'),
+        navLinks: document.querySelectorAll('.nav-link'),
+        mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+        siteNav: document.getElementById('siteNav'),
+        authButton: document.getElementById('authButton'),
+        heroSignInBtn: document.getElementById('heroSignInBtn'),
+        modalSignInBtn: document.getElementById('modalSignInBtn'),
+        authModal: document.getElementById('authModal'),
+        closeAuthModal: document.getElementById('closeAuthModal'),
+        authWelcome: document.getElementById('authWelcome'),
+        authAvatar: document.getElementById('authAvatar')
+    };
+
+    init();
+
+    function init() {
+        initFirebase();
+        bindEvents();
+        route();
+        window.addEventListener('hashchange', route);
+    }
+
+    function initFirebase() {
+        if (!window.firebase || !window.FIREBASE_CONFIG) {
+            console.warn('Firebase config missing. Please populate firebase-config.js with your values.');
+            return;
+        }
+
+        firebase.initializeApp(window.FIREBASE_CONFIG);
+        const auth = firebase.auth();
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        auth.onAuthStateChanged(handleAuthChange);
+        state.auth = auth;
+    }
+
+    function bindEvents() {
+        elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+        elements.authButton.addEventListener('click', () => {
+            if (elements.authButton.textContent.includes('Logout')) {
+                signOutUser();
+            } else {
+                openAuthModal();
+            }
+        });
+
+        elements.heroSignInBtn.addEventListener('click', openAuthModal);
+        elements.modalSignInBtn.addEventListener('click', signInWithGoogle);
+        elements.closeAuthModal.addEventListener('click', closeAuthModal);
+        elements.authModal.addEventListener('click', event => {
+            if (event.target === elements.authModal) {
+                closeAuthModal();
+            }
+        });
+    }
+
+    function route() {
+        const rawHash = window.location.hash.slice(1) || 'home';
+        let routeName = rawHash.split('?')[0];
+
+        if (!document.getElementById(routeName)) {
+            routeName = 'home';
+            window.location.hash = '#home';
+        }
+
+        updateActiveSection(routeName);
+        setActiveNav(routeName);
+    }
+
+    function navigateTo(route) {
+        window.location.hash = `#${route}`;
+    }
+
+    function updateActiveSection(route) {
+        elements.pageSections.forEach(section => {
+            section.classList.toggle('hidden', section.id !== route);
+        });
+    }
+
+    function setActiveNav(route) {
+        elements.navLinks.forEach(link => {
+            const hrefRoute = link.getAttribute('href').slice(1);
+            link.classList.toggle('active', hrefRoute === route);
+        });
+        closeMobileMenu();
+    }
+
+    function toggleMobileMenu() {
+        elements.siteNav.classList.toggle('open');
+    }
+
+    function closeMobileMenu() {
+        elements.siteNav.classList.remove('open');
+    }
+
+    function openAuthModal() {
+        elements.authModal.classList.remove('hidden');
+        elements.authModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeAuthModal() {
+        elements.authModal.classList.add('hidden');
+        elements.authModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function signInWithGoogle() {
+        if (!state.auth) return;
+
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({
+            prompt: 'select_account'
+        });
+
+        state.auth.signInWithPopup(provider).catch(error => {
+            console.error('Auth error:', error);
+            alert('Authentication failed. Please try again.');
+        });
+    }
+
+    function signOutUser() {
+        if (!state.auth) return;
+        state.auth.signOut();
+    }
+
+    function handleAuthChange(user) {
+        if (user) {
+            // User is signed in
+            elements.authWelcome.textContent = `Hi, ${user.displayName || 'User'}`;
+            elements.authAvatar.textContent = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
+            elements.authAvatar.classList.remove('hidden');
+            elements.authWelcome.classList.remove('hidden');
+            elements.authButton.textContent = 'Logout';
+        } else {
+            // User is signed out
+            elements.authWelcome.textContent = '';
+            elements.authAvatar.textContent = '';
+            elements.authAvatar.classList.add('hidden');
+            elements.authWelcome.classList.add('hidden');
+            elements.authButton.textContent = 'Sign in with Google';
+        }
+    }
+
+    function isAuthenticated() {
+        return !!state.auth?.currentUser;
+    }
+});
+        countLow: document.getElementById('countLow'),
+        originalMarkup: document.getElementById('originalMarkup'),
+        suggestedMarkup: document.getElementById('suggestedMarkup'),
+        auditProgress: document.getElementById('auditProgress'),
+        progressFill: document.getElementById('progressFill')
+    };
+
     const API_URL = 'https://accessguard-ksri.onrender.com/api/audit';
     const BATCH_API_URL = 'https://accessguard-ksri.onrender.com/api/batch-audit';
+    const HISTORY_URL = 'https://accessguard-ksri.onrender.com/api/history';
 
-    // Batch UI Elements
-    const batchForm = document.getElementById('batchForm');
-    const batchInput = document.getElementById('batchInput');
-    const batchSection = document.getElementById('batchSection');
-    const batchInsights = document.getElementById('batchInsights');
-    const batchRanking = document.getElementById('batchRanking');
-    const batchList = document.getElementById('batchList');
+    const LOCAL_HISTORY_PREFIX = 'accessguard_history_';
 
-    // UI Elements for Data binding
-    const scoreValue = document.getElementById('scoreValue');
-    const scoreCircle = document.getElementById('scoreCircle');
-    const totalIssuesValue = document.getElementById('totalIssuesValue');
-    const scrapedTitle = document.getElementById('scrapedTitle');
+    init();
 
-    const countCritical = document.getElementById('countCritical');
-    const countHigh = document.getElementById('countHigh');
-    const countMedium = document.getElementById('countMedium');
-    const countLow = document.getElementById('countLow');
+    function init() {
+        initFirebase();
+        bindEvents();
+        route();
+        window.addEventListener('hashchange', route);
+    }
 
-    const violationsList = document.getElementById('violationsList');
+    function initFirebase() {
+        if (!window.firebase || !window.FIREBASE_CONFIG) {
+            console.warn('Firebase config missing. Please populate firebase-config.js with your values.');
+            return;
+        }
 
-    // NEW: PDF Download Button Reference
-    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-    const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
-    const historySection = document.getElementById('historySection');
-    const historyList = document.getElementById('historyList');
+        firebase.initializeApp(window.FIREBASE_CONFIG);
+        const auth = firebase.auth();
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        auth.onAuthStateChanged(handleAuthChange);
+        state.auth = auth;
+    }
 
-    let currentAuditId = null; // Store the latest successfully generated DB audit ID
+    function bindEvents() {
+        elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
-    refreshHistoryBtn.addEventListener('click', () => {
-        fetchAndRenderHistory();
-    });
+        elements.authButton.addEventListener('click', () => {
+            if (elements.authButton.textContent.includes('Logout')) {
+                signOutUser();
+            } else {
+                openAuthModal();
+            }
+        });
 
-    auditForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        elements.heroSignInBtn.addEventListener('click', openAuthModal);
+        elements.modalSignInBtn.addEventListener('click', signInWithGoogle);
+        elements.closeAuthModal.addEventListener('click', closeAuthModal);
+        elements.authModal.addEventListener('click', event => {
+            if (event.target === elements.authModal) {
+                closeAuthModal();
+            }
+        });
 
-        const targetUrl = urlInput.value.trim();
-        if (!targetUrl) return;
+        elements.heroStartBtn.addEventListener('click', () => {
+            navigateTo('dashboard');
+            showAuthReminderIfNeeded();
+        });
 
-        // 1. Setup Loading State
-        setLoadingState(true);
-        hideElements([resultsSection, batchSection, errorMessage, downloadPdfBtn]);
+        elements.heroAuditBtn.addEventListener('click', toggleBatchMode);
 
+        elements.auditForm.addEventListener('submit', event => {
+            event.preventDefault();
+            handleAuditSubmit();
+        });
+
+        elements.batchBtn.addEventListener('click', handleBatchAudit);
+        elements.refreshHistoryBtn.addEventListener('click', fetchAndRenderHistory);
+
+        document.body.addEventListener('click', event => {
+            const target = event.target.closest('[data-action]');
+            if (!target) return;
+            const action = target.dataset.action;
+            const itemId = target.dataset.id;
+            if (action === 'rerun') rerunSavedAudit(itemId);
+            if (action === 'delete') deleteSavedAudit(itemId);
+        });
+
+        elements.protectedLinks.forEach(link => {
+            link.addEventListener('click', event => {
+                if (!isAuthenticated()) {
+                    event.preventDefault();
+                    openAuthModal();
+                }
+            });
+        });
+    }
+
+    function route() {
+        const rawHash = window.location.hash.slice(1) || 'home';
+        let routeName = rawHash.split('?')[0];
+        const protectedRoutes = ['dashboard', 'history'];
+
+        if (!document.getElementById(routeName)) {
+            routeName = 'home';
+            window.location.hash = '#home';
+        }
+
+        if (protectedRoutes.includes(routeName) && !isAuthenticated()) {
+            updateActiveSection('home');
+            openAuthModal();
+            setActiveNav('home');
+            return;
+        }
+
+        updateActiveSection(routeName);
+        setActiveNav(routeName);
+
+        if (routeName === 'dashboard' && isAuthenticated()) {
+            fetchAndRenderHistory();
+        }
+
+        if (routeName === 'history' && isAuthenticated()) {
+            fetchAndRenderHistory();
+        }
+    }
+
+    function navigateTo(route) {
+        window.location.hash = `#${route}`;
+    }
+
+    function updateActiveSection(route) {
+        elements.pageSections.forEach(section => {
+            section.classList.toggle('hidden', section.id !== route);
+        });
+    }
+
+    function setActiveNav(route) {
+        elements.navLinks.forEach(link => {
+            const hrefRoute = link.getAttribute('href').slice(1);
+            link.classList.toggle('active', hrefRoute === route);
+        });
+        closeMobileMenu();
+    }
+
+    function toggleMobileMenu() {
+        elements.siteNav.classList.toggle('open');
+    }
+
+    function closeMobileMenu() {
+        elements.siteNav.classList.remove('open');
+    }
+
+    function openAuthModal() {
+        elements.authModal.classList.remove('hidden');
+        elements.authModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeAuthModal() {
+        elements.authModal.classList.add('hidden');
+        elements.authModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function isAuthenticated() {
+        return state.auth && state.auth.currentUser;
+    }
+
+    function handleAuthChange(user) {
+        if (user) {
+            updateAuthUI(user);
+            if (window.location.hash === '#home' || window.location.hash === '') {
+                navigateTo('dashboard');
+            }
+            closeAuthModal();
+            fetchAndRenderHistory();
+        } else {
+            updateAuthUI(null);
+            navigateTo('home');
+        }
+    }
+
+    function updateAuthUI(user) {
+        const loggedIn = Boolean(user);
+        elements.authWelcome.classList.toggle('hidden', !loggedIn);
+        elements.authAvatar.classList.toggle('hidden', !loggedIn);
+        elements.authButton.textContent = loggedIn ? 'Logout' : 'Sign in with Google';
+        elements.authButton.classList.toggle('btn-primary', !loggedIn);
+        elements.authButton.classList.toggle('btn-ghost', loggedIn);
+        elements.authWelcome.textContent = loggedIn ? `Hi, ${user.displayName || user.email}` : '';
+        if (user && user.photoURL) {
+            elements.authAvatar.style.backgroundImage = `url('${user.photoURL}')`;
+        }
+        elements.authButton.setAttribute('aria-label', loggedIn ? 'Logout' : 'Sign in with Google');
+    }
+
+    async function signInWithGoogle() {
+        if (!state.auth) {
+            showDashboardMessage('Firebase auth is not initialized.', 'warning');
+            return;
+        }
+        const provider = new firebase.auth.GoogleAuthProvider();
         try {
-            // 2. Fetch API dynamically
+            await state.auth.signInWithPopup(provider);
+        } catch (error) {
+            showDashboardMessage(error.message, 'warning');
+        }
+    }
+
+    async function signOutUser() {
+        if (!state.auth) return;
+        try {
+            await state.auth.signOut();
+            state.currentAuditId = null;
+            clearDashboard();
+            showDashboardMessage('You have been signed out.');
+        } catch (error) {
+            showDashboardMessage(error.message, 'warning');
+        }
+    }
+
+    function showAuthReminderIfNeeded() {
+        if (!isAuthenticated()) {
+            openAuthModal();
+        }
+    }
+
+    function toggleBatchMode() {
+        elements.batchWrapper.classList.toggle('hidden');
+    }
+
+    function handleAuditSubmit() {
+        if (!isAuthenticated()) {
+            openAuthModal();
+            return;
+        }
+        const url = elements.urlInput.value.trim();
+        if (!url) {
+            showDashboardMessage('Please enter a valid URL.');
+            return;
+        }
+        runAudit(url);
+    }
+
+    async function handleBatchAudit() {
+        if (!isAuthenticated()) {
+            openAuthModal();
+            return;
+        }
+        const urls = elements.batchInput.value.split('\n').map(item => item.trim()).filter(Boolean);
+        if (!urls.length) {
+            showDashboardMessage('Add at least one URL to run a batch audit.');
+            return;
+        }
+        await runBatchAudit(urls);
+    }
+
+    async function runAudit(url) {
+        startAuditProgress();
+        clearAuditResult();
+        try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ url: targetUrl })
+                headers: await getAuthHeaders(),
+                body: JSON.stringify({ url })
             });
-
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}: Ensure the backend is running.`);
+            }
             const result = await response.json();
-
-            // 3. Handle Backend Error Responses cleanly
             if (result.status === 'error') {
-                throw new Error(result.message);
+                throw new Error(result.message || 'Audit failed.');
             }
-
-            // Store the ID returned from SQLite
-            currentAuditId = result.data.id;
-
-            // 4. Render the purely dynamic response DOM
-            renderDashboard(result.data);
-
-            // 5. Reveal PDF button
-            if (currentAuditId) {
-                downloadPdfBtn.classList.remove('hidden');
-            }
-
+            state.currentAuditId = result.data.id;
+            renderAuditResult(result.data, url);
+            saveAuditHistory(result.data, url);
         } catch (error) {
-            showError(`Audit Failed: ${error.message}`);
+            const errorMsg = error.message.includes('fetch') || error.message.includes('Network') 
+                ? 'Unable to connect to the backend server. Please verify your connection or try again later.' 
+                : error.message;
+            showDashboardMessage(errorMsg, 'warning');
         } finally {
-            setLoadingState(false);
+            completeAuditProgress();
         }
-    });
+    }
 
-    // Handle PDF Download Click
-    downloadPdfBtn.addEventListener('click', () => {
-        if (!currentAuditId) return;
-
-        // This triggers the browser native download process hitting our FastAPI backend endpoint.
-        const downloadUrl = `https://accessguard-ksri.onrender.com/api/report/${currentAuditId}`;
-        window.open(downloadUrl, '_blank');
-    });
-
-    batchForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const lines = batchInput.value.split('\n').map(l => l.trim()).filter(Boolean);
-        if (lines.length === 0) return;
-
-        setLoadingState(true);
-        hideElements([resultsSection, batchSection, errorMessage, downloadPdfBtn]);
-
+    async function runBatchAudit(urls) {
+        startAuditProgress();
+        clearAuditResult();
         try {
             const response = await fetch(BATCH_API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ urls: lines })
+                headers: await getAuthHeaders(),
+                body: JSON.stringify({ urls })
             });
-
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}: Ensure the backend is running.`);
+            }
             const result = await response.json();
             if (result.status === 'error') {
                 throw new Error(result.message || 'Batch audit failed.');
             }
-
-            renderBatchResults(result.data);
-            batchSection.classList.remove('hidden');
-            batchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            renderBatchResult(result.data);
+            elements.batchSection.classList.remove('hidden');
         } catch (error) {
-            showError(`Batch Audit Failed: ${error.message}`);
+            const errorMsg = error.message.includes('fetch') || error.message.includes('Network') 
+                ? 'Unable to connect to the backend server. Please verify your connection or try again later.' 
+                : error.message;
+            showDashboardMessage(errorMsg, 'warning');
         } finally {
-            setLoadingState(false);
-        }
-    });
-
-    function renderBatchResults(data) {
-        const insights = data.comparative_insights || {};
-        const ranking = data.ranking || [];
-        const results = data.results || [];
-
-        batchInsights.innerHTML = `<p><strong>Best:</strong> ${insights.best_site || '-'} | <strong>Worst:</strong> ${insights.worst_site || '-'} | <strong>Avg Score:</strong> ${insights.average_score ?? '-'} </p>`;
-        batchRanking.innerHTML = `<h3>Ranking</h3>${ranking.map(r => `<div>${r.rank}. ${r.url} - ${r.score}</div>`).join('')}`;
-        batchList.innerHTML = `<h3>Results</h3>${results.map(r => `<div style='margin-bottom:.5rem;padding:.3rem;background:#111;color:#fff;border-radius:6px;'><strong>${r.url}</strong> → Score: ${r.score} | Issues: ${r.total_issues}</div>`).join('')}`;
-    }
-
-    function setLoadingState(isLoading) {
-        submitBtn.disabled = isLoading;
-        if (isLoading) {
-            loader.classList.remove('hidden');
-        } else {
-            loader.classList.add('hidden');
+            completeAuditProgress();
         }
     }
 
-    function hideElements(elements) {
-        elements.forEach(el => el.classList.add('hidden'));
-    }
-
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.classList.remove('hidden');
-    }
-
-    function renderDashboard(data) {
-        const summary = data.audit_summary;
-        const issues = summary.severity_breakdown;
-
-        // Render Top Metrics
-        animateScore(summary.score);
-        totalIssuesValue.textContent = summary.total_issues;
-        scrapedTitle.textContent = `Scraped: ${data.metadata.title}`;
-
-        // Render Severity Grid
-        countCritical.textContent = issues.Critical || 0;
-        countHigh.textContent = issues.High || 0;
-        countMedium.textContent = issues.Medium || 0;
-        countLow.textContent = issues.Low || 0;
-
-        // Render Violation DOM list
-        renderViolationsList(data.violations);
-
-        // Reveal the complete dynamic results section smoothly
-        resultsSection.classList.remove('hidden');
-        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function animateScore(score) {
-        const safeScore = Math.max(0, Math.min(100, score));
-        scoreValue.textContent = safeScore;
-
-        // Calculate stroke-dasharray (percentage of circle)
-        // circle path length = 100
-        scoreCircle.setAttribute('stroke-dasharray', `${safeScore}, 100`);
-
-        // Determine animated color logically
-        let strokeColor = 'var(--score-bad)';
-        if (safeScore >= 90) {
-            strokeColor = 'var(--score-good)';
-        } else if (safeScore >= 70) {
-            strokeColor = 'var(--score-warn)';
+    async function getAuthHeaders() {
+        const headers = { 'Content-Type': 'application/json' };
+        if (state.auth?.currentUser) {
+            try {
+                const token = await state.auth.currentUser.getIdToken();
+                headers.Authorization = `Bearer ${token}`;
+            } catch (error) {
+                console.warn('Failed to get auth token', error);
+            }
         }
-
-        scoreCircle.style.stroke = strokeColor;
-        scoreValue.style.color = strokeColor;
+        return headers;
     }
 
-    function renderViolationsList(violations) {
-        violationsList.innerHTML = '';
+    function renderAuditResult(data, url) {
+        const summary = data.audit_summary || {};
+        const issues = summary.severity_breakdown || {};
+        elements.scoreValue.textContent = clampNumber(summary.score, 0, 100);
+        elements.scoreCircle.setAttribute('stroke-dasharray', `${clampNumber(summary.score, 0, 100)}, 100`);
+        elements.scoreCircle.style.stroke = getScoreColor(summary.score);
+        elements.totalIssuesValue.textContent = summary.total_issues || 0;
+        elements.countCritical.textContent = issues.Critical || 0;
+        elements.countHigh.textContent = issues.High || 0;
+        elements.countMedium.textContent = issues.Medium || 0;
+        elements.countLow.textContent = issues.Low || 0;
+        renderViolations(data.violations || []);
+        renderRemediation(data);
+        elements.scoreCard.classList.remove('hidden');
+        elements.remediationCard.classList.remove('hidden');
+        elements.violationsSection.classList.remove('hidden');
+        elements.downloadPdfBtn.classList.remove('hidden');
+        elements.downloadPdfBtn.onclick = () => window.open(`https://accessguard-ksri.onrender.com/api/report/${state.currentAuditId}`, '_blank');
+        if (!elements.historyList.innerHTML.includes('history-card')) {
+            fetchAndRenderHistory();
+        }
+    }
 
-        if (!violations || violations.length === 0) {
-            violationsList.innerHTML = `
-                <div class="no-issues">
-                    🎉 Excellent! No accessibility violations were detected within our active rule engine scope.
-                </div>
-            `;
+    function renderRemediation(data) {
+        const original = data.metadata?.before_html || 'No original markup available.';
+        const suggested = data.metadata?.after_html || data.remediation || 'No remediation preview available.';
+        elements.originalMarkup.textContent = original;
+        elements.suggestedMarkup.textContent = suggested;
+    }
+
+    function renderViolations(violations) {
+        const container = document.getElementById('violationsList');
+        container.innerHTML = '';
+        if (!violations.length) {
+            container.innerHTML = '<div class="violation-card"><p class="v-message">No accessibility violations were detected by the audit engine.</p></div>';
             return;
         }
-
-        violations.forEach(v => {
+        violations.forEach(issue => {
             const card = document.createElement('div');
-            card.className = `violation-card sev-${v.severity}`;
-
-            // Format HTML safely to prevent raw DOM injection execution
-            const safeElement = v.element.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            const formattedRule = v.rule.replace(/_/g, ' ').toUpperCase();
-
+            card.className = 'violation-card';
             card.innerHTML = `
                 <div class="violation-header">
-                    <div class="v-rule">${formattedRule}</div>
-                    <div class="v-badge">${v.severity}</div>
+                    <div class="v-rule">${escapeHtml(issue.rule || 'Unknown')}</div>
+                    <span class="v-badge">${escapeHtml(issue.severity || 'Unknown')}</span>
                 </div>
-                <div class="v-message">${v.message}</div>
-                <div class="v-element-wrapper">
-                    <pre class="v-element">${safeElement}</pre>
-                </div>
+                <p class="v-message">${escapeHtml(issue.message || 'No details provided.')}</p>
+                <div class="v-element-wrapper"><pre class="v-element">${escapeHtml(issue.element || '')}</pre></div>
             `;
-
-            violationsList.appendChild(card);
+            container.appendChild(card);
         });
     }
 
-    async function fetchAndRenderHistory() {
-        try {
-            const response = await fetch('https://accessguard-ksri.onrender.com/api/history');
-            const result = await response.json();
-            if (result.status === 'error') {
-                throw new Error(result.message || 'Unable to load history');
-            }
+    function renderBatchResult(data) {
+        const insights = data.comparative_insights || {};
+        const ranking = data.ranking || [];
+        const results = data.results || [];
+        elements.batchInsights.innerHTML = `<p><strong>Best:</strong> ${escapeHtml(insights.best_site || '-')}&nbsp;&nbsp;|&nbsp;&nbsp;<strong>Worst:</strong> ${escapeHtml(insights.worst_site || '-')}&nbsp;&nbsp;|&nbsp;&nbsp;<strong>Avg Score:</strong> ${escapeHtml(insights.average_score ?? '-')}</p>`;
+        elements.batchRanking.innerHTML = `<h3>Ranking</h3>${ranking.map(item => `<div class="batch-item"><strong>${escapeHtml(item.url)}</strong> · Score: ${escapeHtml(item.score)} · Issues: ${escapeHtml(item.total_issues)}</div>`).join('')}`;
+        elements.batchList.innerHTML = `<h3>Results</h3>${results.map(item => `<div class="batch-item"><strong>${escapeHtml(item.url)}</strong> · Score: ${escapeHtml(item.score)} · Issues: ${escapeHtml(item.total_issues)}</div>`).join('')}`;
+    }
 
-            const historyItems = result.data || [];
-            if (!historyItems.length) {
-                historySection.classList.remove('hidden');
-                historyList.innerHTML = '<p>No audit history found yet. Run your first audit to populate history.</p>';
-                return;
-            }
+    function startAuditProgress() {
+        state.runningAudit = true;
+        elements.auditProgress.classList.remove('hidden');
+        elements.progressFill.style.width = '20%';
+        showDashboardMessage('Audit started...', 'info');
+    }
 
-            historySection.classList.remove('hidden');
-            historyList.innerHTML = `
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>URL</th><th>Title</th><th>Score</th><th>Issues</th><th>Critical</th><th>High</th><th>Medium</th><th>Low</th><th>Date</th><th>Report</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${historyItems.map(item => `
-                            <tr>
-                                <td>${item.id}</td>
-                                <td><a href="${item.url}" target="_blank" rel="noreferrer" style="color:#3b82f6;">${item.url}</a></td>
-                                <td>${item.title}</td>
-                                <td>${item.score}</td>
-                                <td>${item.total_issues}</td>
-                                <td>${item.critical_count}</td>
-                                <td>${item.high_count}</td>
-                                <td>${item.medium_count}</td>
-                                <td>${item.low_count}</td>
-                                <td>${new Date(item.timestamp).toLocaleString()}</td>
-                                <td><a href="https://accessguard-ksri.onrender.com/api/report/${item.id}" target="_blank">Download</a></td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        } catch (err) {
-            showError(`History Load Failed: ${err.message}`);
+    function completeAuditProgress() {
+        state.runningAudit = false;
+        elements.progressFill.style.width = '100%';
+        setTimeout(() => {
+            if (!state.runningAudit) {
+                elements.auditProgress.classList.add('hidden');
+                elements.progressFill.style.width = '0%';
+            }
+        }, 600);
+    }
+
+    function clearAuditResult() {
+        elements.scoreCard.classList.add('hidden');
+        elements.remediationCard.classList.add('hidden');
+        elements.violationsSection.classList.add('hidden');
+        elements.downloadPdfBtn.classList.add('hidden');
+    }
+
+    function showDashboardMessage(message, level = 'info') {
+        elements.authMessage.textContent = message;
+        elements.authMessage.classList.remove('hidden', 'warning');
+        if (level === 'warning') {
+            elements.authMessage.classList.add('warning');
         }
     }
 
-    // Load history automatically when the app is ready
-    fetchAndRenderHistory();
+    function fetchAndRenderHistory() {
+        if (!isAuthenticated()) return;
+        renderSavedHistory();
+        fetchRemoteHistory();
+    }
+
+    async function fetchRemoteHistory() {
+        try {
+            const response = await fetch(HISTORY_URL, { headers: await getAuthHeaders() });
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}`);
+            }
+            const result = await response.json();
+            if (result.status === 'error') {
+                throw new Error(result.message || 'Unable to load remote history.');
+            }
+            renderRemoteHistory(result.data || []);
+        } catch (error) {
+            console.warn('History fetch failed:', error.message);
+        }
+    }
+
+    function renderSavedHistory() {
+        const history = loadHistory();
+        if (!history.length) {
+            elements.historyList.innerHTML = '<div class="history-card"><div class="history-meta"><strong>No saved audits yet</strong><p>Run an audit to populate your user-specific session history.</p></div></div>';
+            return;
+        }
+
+        elements.historyList.innerHTML = history.map(item => `
+            <div class="history-card">
+                <div class="history-meta">
+                    <strong>${escapeHtml(item.title)}</strong>
+                    <p>${escapeHtml(item.url)}</p>
+                    <p>${escapeHtml(item.score)} score · ${escapeHtml(item.total_issues)} issues · ${escapeHtml(new Date(item.timestamp).toLocaleString())}</p>
+                </div>
+                <div class="history-actions">
+                    <button class="btn btn-secondary" data-action="rerun" data-id="${escapeHtml(item.id)}">Re-run</button>
+                    <button class="btn btn-ghost" data-action="delete" data-id="${escapeHtml(item.id)}">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderRemoteHistory(items) {
+        if (!items.length) return;
+        const remoteHeader = document.createElement('div');
+        remoteHeader.className = 'history-card';
+        remoteHeader.innerHTML = `<div class="history-meta"><strong>Backend audit history</strong><p>Recent audit records from the Render API.</p></div>`;
+        elements.historyList.appendChild(remoteHeader);
+        const table = document.createElement('div');
+        table.innerHTML = `<div class="history-card" style="overflow-x:auto;"><table class="history-table"><thead><tr><th>ID</th><th>URL</th><th>Score</th><th>Issues</th><th>Date</th><th>Report</th></tr></thead><tbody>${items.map(item => `
+                <tr>
+                    <td>${escapeHtml(item.id)}</td>
+                    <td><a href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer">${escapeHtml(item.url)}</a></td>
+                    <td>${escapeHtml(item.score)}</td>
+                    <td>${escapeHtml(item.total_issues)}</td>
+                    <td>${escapeHtml(new Date(item.timestamp).toLocaleString())}</td>
+                    <td><a href="https://accessguard-ksri.onrender.com/api/report/${escapeHtml(item.id)}" target="_blank">Report</a></td>
+                </tr>`).join('')}</tbody></table></div>`;
+        elements.historyList.appendChild(table);
+    }
+
+    function rerunSavedAudit(id) {
+        const audit = loadHistory().find(item => item.id === id);
+        if (!audit) return;
+        navigateTo('dashboard');
+        elements.urlInput.value = audit.url;
+        runAudit(audit.url);
+    }
+
+    function deleteSavedAudit(id) {
+        if (!isAuthenticated()) return;
+        const key = getHistoryKey();
+        const history = loadHistory().filter(item => item.id !== id);
+        localStorage.setItem(key, JSON.stringify(history));
+        renderSavedHistory();
+    }
+
+    function saveAuditHistory(data, url) {
+        if (!isAuthenticated()) return;
+        const entry = {
+            id: `${data.id || Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+            url,
+            title: data.metadata?.title || url,
+            score: data.audit_summary?.score || 0,
+            total_issues: data.audit_summary?.total_issues || 0,
+            timestamp: new Date().toISOString()
+        };
+        const history = loadHistory().filter(item => item.url !== url);
+        history.unshift(entry);
+        localStorage.setItem(getHistoryKey(), JSON.stringify(history.slice(0, 25)));
+        renderSavedHistory();
+    }
+
+    function loadHistory() {
+        if (!isAuthenticated()) return [];
+        try {
+            return JSON.parse(localStorage.getItem(getHistoryKey()) || '[]');
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function getHistoryKey() {
+        return `${LOCAL_HISTORY_PREFIX}${state.auth?.currentUser?.uid || 'anonymous'}`;
+    }
+
+    function clearDashboard() {
+        clearAuditResult();
+        elements.historyList.innerHTML = '';
+        elements.authAvatar.style.backgroundImage = '';
+    }
+
+    function clampNumber(value, min, max) {
+        const numeric = Number(value);
+        return Number.isFinite(numeric) ? Math.min(Math.max(numeric, min), max) : min;
+    }
+
+    function getScoreColor(score) {
+        if (score >= 90) return 'var(--success)';
+        if (score >= 70) return 'var(--warning)';
+        return 'var(--danger)';
+    }
+
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 });

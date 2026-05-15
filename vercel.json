@@ -1,0 +1,8 @@
+{
+  "outputDirectory": "frontend",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

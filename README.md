@@ -82,3 +82,34 @@ sequenceDiagram
     API->>API: Compile ReportLab PDF byte stream
     API-->>User: Download attachment: audit_report.pdf
 ```
+
+---
+
+## 🚀 Deployment Automation Setup
+
+AccessGuard is pre-configured for a highly automated deployment utilizing **Vercel** for the frontend and **Render** for the backend. 
+
+### **1. Frontend Deployment (Vercel)**
+The frontend is a static Single-Page Application (SPA) natively integrated with Vercel. 
+- **Configuration**: Managed by `vercel.json` to handle SPA clean routing (`/dashboard` to `/dashboard.html`) and fallback routing to avoid 404s.
+- **How to Deploy**: 
+  1. Push code to GitHub.
+  2. Import the repository in Vercel.
+  3. Set the **Output Directory** to `frontend`. No build command is required.
+  4. Vercel will automatically redeploy on every push to `main`.
+
+### **2. Backend Deployment (Render)**
+The FastAPI Python backend is set up as a Web Service on Render using standard configuration.
+- **Configuration**: Managed seamlessly via `render.yaml`. 
+- **How to Deploy**:
+  1. In the Render Dashboard, go to **Blueprints** or create a new Web Service.
+  2. Connect your GitHub repository.
+  3. Render will automatically read `render.yaml` to configure the Python environment, install dependencies from `requirements.txt`, and run the Uvicorn server on the correct port.
+  4. The deployment pipeline uses the built-in `/api/health` endpoint for readiness checks.
+
+### **3. Environment Variables (.env)**
+See the `.env.example` file for a list of required variables. 
+For local development, copy `.env.example` to `.env` and fill in your Firebase API keys if utilizing Firebase Auth. In Vercel, inject the frontend Firebase variables via the Project Settings > Environment Variables.
+
+### **4. CI/CD Validation**
+The project includes a `.github/workflows/validate.yml` GitHub Actions workflow. On every push or pull request to the main branch, it runs an automated syntax and dependency check on the Python backend to prevent broken deployments.
