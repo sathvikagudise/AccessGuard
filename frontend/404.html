@@ -3,65 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found - AccessGuard</title>
+    <title>AccessGuard — Page Not Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .error-container {
+        .error-shell {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            background-color: var(--bg-main);
-            color: var(--text-main);
             padding: 2rem;
         }
-        
         .error-code {
             font-size: 8rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #5b8bff, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
             line-height: 1;
         }
-        
         .error-title {
             font-size: 2rem;
             margin: 1rem 0;
             font-weight: 600;
         }
-        
         .error-desc {
-            color: var(--text-muted);
+            color: var(--muted);
             margin-bottom: 2rem;
             max-width: 500px;
-        }
-        
-        .back-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
     </style>
 </head>
 <body>
-    <div class="error-container">
+    <div class="error-shell">
         <h1 class="error-code">404</h1>
         <h2 class="error-title">Page Not Found</h2>
-        <p class="error-desc">The page you're looking for doesn't exist or has been moved. Check the URL or return to the main application.</p>
-        <a href="/" class="back-btn">Go to Home</a>
+        <p class="error-desc">The page you're looking for doesn't exist or has been moved.</p>
+        <a href="/" class="btn btn-primary">Go to Home</a>
     </div>
 </body>
 </html>

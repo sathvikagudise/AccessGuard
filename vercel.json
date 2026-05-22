@@ -1,7 +1,12 @@
 {
   "rewrites": [
-    { "source": "/dashboard.html", "destination": "/frontend/dashboard.html" },
     { "source": "/", "destination": "/frontend/index.html" },
+    { "source": "/login.html", "destination": "/frontend/login.html" },
+    { "source": "/signup.html", "destination": "/frontend/signup.html" },
+    { "source": "/dashboard.html", "destination": "/frontend/dashboard.html" },
+    { "source": "/auth.js", "destination": "/frontend/auth.js" },
+    { "source": "/styles.css", "destination": "/frontend/styles.css" },
+    { "source": "/dashboard.js", "destination": "/frontend/dashboard.js" },
     { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
 }

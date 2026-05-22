@@ -1,71 +1,47 @@
-import sqlite3
 import json
 from typing import Dict, Any, List, Tuple
-from app.database import DB_PATH
 from app.config import SCORING_WEIGHTS
 
-def analyze_trends() -> Tuple[Dict[str, int], int]:
-    """
-    Reads past audits directly from the SQLite database to count 
-    the frequency of each rule occurrence across historical audits.
-    """
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    # Only fetch the violations column to keep memory usage low
-    try:
-        cursor.execute("SELECT violations FROM audits")
-        rows = cursor.fetchall()
-    except sqlite3.OperationalError:
-        rows = []
-        
-    conn.close()
-    
-    total_audits = len(rows)
+
+def analyze_trends(all_audits: List[Dict[str, Any]]) -> Tuple[Dict[str, int], int]:
+    total_audits = len(all_audits)
     trends = {}
-    
-    for row in rows:
-        v_str = row[0]
+
+    for row in all_audits:
+        v_str = row.get("violations", "[]")
         if not v_str:
             continue
-            
         try:
-            violations = json.loads(v_str)
-        except json.JSONDecodeError:
+            violations = json.loads(v_str) if isinstance(v_str, str) else v_str
+        except (json.JSONDecodeError, TypeError):
             violations = []
-            
-        # Count rule occurrence once per audit to track percentage accurately
+
         seen_rules = set()
         for v in violations:
             rule = v.get("rule")
             if rule and rule not in seen_rules:
                 seen_rules.add(rule)
                 trends[rule] = trends.get(rule, 0) + 1
-                
+
     return trends, total_audits
 
+
 def adjust_weights(trends: Dict[str, int], total_audits: int) -> Dict[str, int]:
-    """
-    Dynamically adjusts severity weights based on historical trends.
-    If a rule appears in more than 30% of scans, bump its associated severity penalty.
-    """
     adjusted_weights = dict(SCORING_WEIGHTS)
-    
+
     if total_audits == 0:
         return adjusted_weights
-        
-    # Mapping of common rules to their severity tier
+
     rule_severities = {
         "missing_image_alt": "Critical",
         "input_without_label": "High",
         "missing_html_lang": "High",
         "multiple_h1_tags": "Medium",
-        "skipped_heading_level": "Medium"
+        "skipped_heading_level": "Medium",
     }
-    
+
     for rule, count in trends.items():
         frequency = count / total_audits
-        # Simulate learning by penalizing highly-recurring issues
         if frequency >= 0.3:
             severity = rule_severities.get(rule)
             if severity and severity in adjusted_weights:
@@ -75,26 +51,23 @@ def adjust_weights(trends: Dict[str, int], total_audits: int) -> Dict[str, int]:
                     adjusted_weights[severity] += 2
                 elif severity in ["Medium", "Low"]:
                     adjusted_weights[severity] += 1
-                    
+
     return adjusted_weights
 
+
 def generate_priority_insights(trends: Dict[str, int], total_audits: int) -> Dict[str, str]:
-    """
-    Generates intelligent string feedback identifying priority focus areas
-    based on the historically aggregated severity trends.
-    """
     if not trends or total_audits == 0:
         return {
             "most_common_issue": "None",
-            "recommendation": "Perform more audits to generate insights."
+            "recommendation": "Perform more audits to generate insights.",
         }
-        
+
     most_common_rule = max(trends, key=trends.get)
     frequency = trends[most_common_rule]
     percentage = int((frequency / total_audits) * 100)
-    
+
     most_common_issue_text = f"Most frequent issue: {most_common_rule} (occurs in {percentage}% of audits)"
-    
+
     if most_common_rule == "missing_image_alt":
         rec = "High priority fix recommended: image accessibility"
     elif most_common_rule == "input_without_label":
@@ -105,8 +78,8 @@ def generate_priority_insights(trends: Dict[str, int], total_audits: int) -> Dic
         rec = "High priority fix recommended: heading structure hierarchy"
     else:
         rec = f"High priority fix recommended: {most_common_rule.replace('_', ' ')}"
-        
+
     return {
         "most_common_issue": most_common_issue_text,
-        "recommendation": rec
+        "recommendation": rec,
     }

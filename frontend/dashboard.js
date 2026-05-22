@@ -1,13 +1,9 @@
-/*
-  AccessGuard dashboard application
-  Handles routing, Firebase authentication, audit execution, and local history.
-*/
-
 document.addEventListener('DOMContentLoaded', () => {
+    AUTH.redirectIfNotAuthenticated();
+
     const state = {
-        auth: null,
         currentAuditId: null,
-        runningAudit: false
+        runningAudit: false,
     };
 
     const elements = {
@@ -16,12 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileMenuBtn: document.getElementById('mobileMenuBtn'),
         siteNav: document.getElementById('siteNav'),
         authButton: document.getElementById('authButton'),
-        modalSignInBtn: document.getElementById('modalSignInBtn'),
-        authModal: document.getElementById('authModal'),
-        closeAuthModal: document.getElementById('closeAuthModal'),
         authWelcome: document.getElementById('authWelcome'),
         authAvatar: document.getElementById('authAvatar'),
-        authMessage: document.getElementById('dashboardMessage'),
         auditForm: document.getElementById('auditForm'),
         urlInput: document.getElementById('urlInput'),
         submitBtn: document.getElementById('submitBtn'),
@@ -39,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreCard: document.getElementById('scoreCard'),
         remediationCard: document.getElementById('remediationCard'),
         violationsSection: document.getElementById('violationsSection'),
+        violationsList: document.getElementById('violationsList'),
         scoreValue: document.getElementById('scoreValue'),
         scoreCircle: document.getElementById('scoreCircle'),
         totalIssuesValue: document.getElementById('totalIssuesValue'),
@@ -49,55 +42,34 @@ document.addEventListener('DOMContentLoaded', () => {
         originalMarkup: document.getElementById('originalMarkup'),
         suggestedMarkup: document.getElementById('suggestedMarkup'),
         auditProgress: document.getElementById('auditProgress'),
-        progressFill: document.getElementById('progressFill')
+        progressFill: document.getElementById('progressFill'),
     };
-
-    const API_URL = 'https://accessguard-ksri.onrender.com/api/audit';
-    const BATCH_API_URL = 'https://accessguard-ksri.onrender.com/api/batch-audit';
-    const HISTORY_URL = 'https://accessguard-ksri.onrender.com/api/history';
-
-    const LOCAL_HISTORY_PREFIX = 'accessguard_history_';
 
     init();
 
     function init() {
-        console.log('[Dashboard] Initializing AccessGuard Dashboard...');
-        initFirebase();
+        renderUser();
         bindEvents();
         route();
         window.addEventListener('hashchange', route);
     }
 
-    function initFirebase() {
-        if (!window.firebase || !window.FIREBASE_CONFIG) {
-            console.warn('Firebase config missing. Please populate firebase-config.js with your values.');
-            return;
+    function renderUser() {
+        const user = AUTH.getUser();
+        if (user) {
+            elements.authWelcome.textContent = `Hi, ${user.name || 'User'}`;
+            elements.authAvatar.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+            elements.authAvatar.classList.remove('hidden');
+            elements.authWelcome.classList.remove('hidden');
+            elements.authButton.textContent = 'Logout';
         }
-
-        firebase.initializeApp(window.FIREBASE_CONFIG);
-        const auth = firebase.auth();
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        auth.onAuthStateChanged(handleAuthChange);
-        state.auth = auth;
     }
 
     function bindEvents() {
         elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
         elements.authButton.addEventListener('click', () => {
-            if (elements.authButton.textContent.includes('Logout')) {
-                signOutUser();
-            } else {
-                openAuthModal();
-            }
-        });
-
-        elements.modalSignInBtn.addEventListener('click', signInWithGoogle);
-        elements.closeAuthModal.addEventListener('click', closeAuthModal);
-        elements.authModal.addEventListener('click', event => {
-            if (event.target === elements.authModal) {
-                closeAuthModal();
-            }
+            AUTH.logout();
         });
 
         elements.heroAuditBtn.addEventListener('click', toggleBatchMode);
@@ -107,17 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
             handleAuditSubmit();
         });
 
-        elements.batchBtn.addEventListener('click', handleBatchAudit);
+        elements.batchBtn.addEventListener('click', runBatchAudit);
         elements.refreshHistoryBtn.addEventListener('click', fetchAndRenderHistory);
-
-        document.body.addEventListener('click', event => {
-            const target = event.target.closest('[data-action]');
-            if (!target) return;
-            const action = target.dataset.action;
-            const itemId = target.dataset.id;
-            if (action === 'rerun') rerunSavedAudit(itemId);
-            if (action === 'delete') deleteSavedAudit(itemId);
-        });
     }
 
     function route() {
@@ -132,19 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActiveSection(routeName);
         setActiveNav(routeName);
 
-        if (routeName === 'dashboard' && isAuthenticated()) {
-            console.log('[Dashboard] Fetching history for dashboard view.');
+        if (routeName === 'dashboard' || routeName === 'history') {
             fetchAndRenderHistory();
         }
-
-        if (routeName === 'history' && isAuthenticated()) {
-            console.log('[Dashboard] Fetching history for history view.');
-            fetchAndRenderHistory();
-        }
-    }
-
-    function navigateTo(route) {
-        window.location.hash = `#${route}`;
     }
 
     function updateActiveSection(route) {
@@ -169,57 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.siteNav.classList.remove('open');
     }
 
-    function openAuthModal() {
-        elements.authModal.classList.remove('hidden');
-        elements.authModal.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeAuthModal() {
-        elements.authModal.classList.add('hidden');
-        elements.authModal.setAttribute('aria-hidden', 'true');
-    }
-
-    function signInWithGoogle() {
-        if (!state.auth) return;
-
-        const provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({
-            prompt: 'select_account'
-        });
-
-        state.auth.signInWithPopup(provider).catch(error => {
-            console.error('Auth error:', error);
-            alert('Authentication failed. Please try again.');
-        });
-    }
-
-    function signOutUser() {
-        if (!state.auth) return;
-        console.log('[Dashboard] Signing out user...');
-        state.auth.signOut();
-        window.location.href = './index.html';
-    }
-
-    function handleAuthChange(user) {
-        if (user) {
-            console.log('[Dashboard] Auth State: Logged IN as', user.email);
-            // User is signed in
-            elements.authWelcome.textContent = `Hi, ${user.displayName || 'User'}`;
-            elements.authAvatar.textContent = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
-            elements.authAvatar.classList.remove('hidden');
-            elements.authWelcome.classList.remove('hidden');
-            elements.authButton.textContent = 'Logout';
-        } else {
-            console.log('[Dashboard] Auth State: Logged OUT. Redirecting to landing page.');
-            // User is signed out - redirect to landing page
-            window.location.href = './index.html';
-        }
-    }
-
-    function isAuthenticated() {
-        return !!state.auth?.currentUser;
-    }
-
     function toggleBatchMode() {
         const isBatch = !elements.batchWrapper.classList.contains('hidden');
         elements.batchWrapper.classList.toggle('hidden', isBatch);
@@ -234,10 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!url) return;
 
         if (elements.batchWrapper.classList.contains('hidden')) {
-            // Single audit
             runAudit(url);
         } else {
-            // Batch audit
             const batchUrls = elements.batchInput.value.trim().split('\n').filter(u => u.trim());
             if (batchUrls.length === 0) return;
             runBatchAudit(batchUrls);
@@ -253,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.auditProgress.classList.remove('hidden');
         elements.progressFill.style.width = '0%';
 
-        // Simulate progress
         let progress = 0;
         const progressInterval = setInterval(() => {
             progress += Math.random() * 15;
@@ -261,57 +160,47 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.progressFill.style.width = `${progress}%`;
         }, 200);
 
-        fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-        })
-        .then(response => {
-            console.log('[Dashboard] Audit response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`Server returned ${response.status}: Ensure the backend is running.`);
-            }
-            return response.json();
-        })
-        .then(responseData => {
-            console.log('[Dashboard] Raw Audit Payload:', responseData);
-            if (responseData.status === 'error') {
-                throw new Error(responseData.message || 'Backend API error');
-            }
-            
-            const payload = responseData.data || responseData;
-            
-            const formattedData = {
-                score: payload.audit_summary?.score,
-                violations: payload.violations?.map(v => ({
-                    ...v,
-                    suggestion: v.ai_suggestion || v.suggestion
-                })) || [],
-                remediation: payload.violations?.filter(v => v.before_html && v.after_html).map(v => ({
-                    original: v.before_html,
-                    suggestion: v.after_html
-                })) || []
-            };
+        AUTH.apiPost('/api/audit', { url })
+            .then(responseData => {
+                if (responseData.status === 'error') {
+                    throw new Error(responseData.message || 'Backend API error');
+                }
 
-            clearInterval(progressInterval);
-            elements.progressFill.style.width = '100%';
-            setTimeout(() => {
-                renderAuditResult(formattedData, url);
+                const payload = responseData.data || responseData;
+
+                const formattedData = {
+                    id: payload.id,
+                    score: payload.audit_summary?.score,
+                    violations: payload.violations?.map(v => ({
+                        ...v,
+                        suggestion: v.ai_suggestion || v.suggestion,
+                    })) || [],
+                    remediation: payload.violations?.filter(v => v.before_html && v.after_html).map(v => ({
+                        original: v.before_html,
+                        suggestion: v.after_html,
+                    })) || [],
+                };
+
+                state.currentAuditId = payload.id;
+
+                clearInterval(progressInterval);
+                elements.progressFill.style.width = '100%';
+                setTimeout(() => {
+                    renderAuditResult(formattedData, url);
+                    state.runningAudit = false;
+                    elements.submitBtn.disabled = false;
+                    elements.submitBtn.textContent = 'Run Audit';
+                    elements.auditProgress.classList.add('hidden');
+                }, 500);
+            })
+            .catch(error => {
+                clearInterval(progressInterval);
+                alert('Audit failed: ' + error.message);
                 state.runningAudit = false;
                 elements.submitBtn.disabled = false;
                 elements.submitBtn.textContent = 'Run Audit';
                 elements.auditProgress.classList.add('hidden');
-            }, 500);
-        })
-        .catch(error => {
-            clearInterval(progressInterval);
-            console.error('[Dashboard] API Failure - Audit error:', error);
-            alert('Audit failed. Please try again.');
-            state.runningAudit = false;
-            elements.submitBtn.disabled = false;
-            elements.submitBtn.textContent = 'Run Audit';
-            elements.auditProgress.classList.add('hidden');
-        });
+            });
     }
 
     function runBatchAudit(urls) {
@@ -321,49 +210,35 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.batchBtn.disabled = true;
         elements.batchBtn.textContent = 'Running...';
 
-        fetch(BATCH_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ urls })
-        })
-        .then(response => {
-            console.log('[Dashboard] Batch Audit response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`Server returned ${response.status}: Ensure the backend is running.`);
-            }
-            return response.json();
-        })
-        .then(responseData => {
-            console.log('[Dashboard] Raw Batch Payload:', responseData);
-            if (responseData.status === 'error') {
-                throw new Error(responseData.message || 'Backend API error');
-            }
-            
-            const payload = responseData.data || responseData;
-            const formattedBatchData = {
-                results: payload.results,
-                ranking: payload.ranking,
-                insights: payload.comparative_insights ? 
-                    `Best Site: ${payload.comparative_insights.best_site} | Avg Score: ${payload.comparative_insights.average_score}` 
-                    : ''
-            };
-            
-            renderBatchResult(formattedBatchData);
-            state.runningAudit = false;
-            elements.batchBtn.disabled = false;
-            elements.batchBtn.textContent = 'Run Batch Audit';
-        })
-        .catch(error => {
-            console.error('[Dashboard] API Failure - Batch audit error:', error);
-            alert('Batch audit failed. Please try again.');
-            state.runningAudit = false;
-            elements.batchBtn.disabled = false;
-            elements.batchBtn.textContent = 'Run Batch Audit';
-        });
+        AUTH.apiPost('/api/batch-audit', { urls })
+            .then(responseData => {
+                if (responseData.status === 'error') {
+                    throw new Error(responseData.message || 'Backend API error');
+                }
+
+                const payload = responseData.data || responseData;
+                const formattedBatchData = {
+                    results: payload.results,
+                    ranking: payload.ranking,
+                    insights: payload.comparative_insights
+                        ? `Best Site: ${payload.comparative_insights.best_site} | Avg Score: ${payload.comparative_insights.average_score}`
+                        : '',
+                };
+
+                renderBatchResult(formattedBatchData);
+                state.runningAudit = false;
+                elements.batchBtn.disabled = false;
+                elements.batchBtn.textContent = 'Run Batch Audit';
+            })
+            .catch(error => {
+                alert('Batch audit failed: ' + error.message);
+                state.runningAudit = false;
+                elements.batchBtn.disabled = false;
+                elements.batchBtn.textContent = 'Run Batch Audit';
+            });
     }
 
     function renderAuditResult(data, url) {
-        // Reset previous results
         elements.scoreCard.classList.add('hidden');
         elements.remediationCard.classList.add('hidden');
         elements.violationsSection.classList.add('hidden');
@@ -375,12 +250,12 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.scoreCard.classList.remove('hidden');
         }
 
-        // Update stats
         elements.totalIssuesValue.textContent = data.violations?.length || 0;
-        elements.countCritical.textContent = data.violations?.filter(v => v.severity === 'critical').length || 0;
-        elements.countHigh.textContent = data.violations?.filter(v => v.severity === 'high').length || 0;
-        elements.countMedium.textContent = data.violations?.filter(v => v.severity === 'medium').length || 0;
-        elements.countLow.textContent = data.violations?.filter(v => v.severity === 'low').length || 0;
+        const sev = s => (s || '').toLowerCase();
+        elements.countCritical.textContent = data.violations?.filter(v => sev(v.severity) === 'critical').length || 0;
+        elements.countHigh.textContent = data.violations?.filter(v => sev(v.severity) === 'high').length || 0;
+        elements.countMedium.textContent = data.violations?.filter(v => sev(v.severity) === 'medium').length || 0;
+        elements.countLow.textContent = data.violations?.filter(v => sev(v.severity) === 'low').length || 0;
 
         if (data.remediation && data.remediation.length > 0) {
             const remediation = data.remediation[0];
@@ -394,27 +269,19 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.violationsSection.classList.remove('hidden');
         }
 
-        // Save to local history
-        if (isAuthenticated()) {
-            saveAuditToHistory(data, url);
-        }
-
-        // Show download button if we have results
         if (data.score !== undefined || (data.violations && data.violations.length > 0)) {
             elements.downloadPdfBtn.classList.remove('hidden');
-            elements.downloadPdfBtn.onclick = () => downloadPdfReport(data, url);
+            elements.downloadPdfBtn.onclick = () => downloadPdfReport(data.id);
         }
     }
 
     function renderBatchResult(data) {
         elements.batchSection.classList.remove('hidden');
 
-        // Render insights
         if (data.insights) {
             elements.batchInsights.innerHTML = `<p>${data.insights}</p>`;
         }
 
-        // Render ranking
         if (data.ranking) {
             const rankingHtml = data.ranking.map(item =>
                 `<div class="ranking-item">
@@ -425,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.batchRanking.innerHTML = rankingHtml;
         }
 
-        // Render detailed results
         if (data.results) {
             const resultsHtml = data.results.map(result =>
                 `<div class="batch-result-item">
@@ -439,51 +305,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderViolations(violations) {
-        const violationsHtml = violations.map(violation => `
-            <div class="violation-card severity-${violation.severity}">
-                <div class="violation-header">
-                    <span class="violation-severity">${violation.severity}</span>
-                    <h4>${violation.title}</h4>
+        elements.violationsList.innerHTML = '';
+
+        if (!violations || violations.length === 0) {
+            elements.violationsList.innerHTML = `
+                <div class="no-issues">
+                    Excellent! No accessibility violations were detected.
                 </div>
-                <p class="violation-description">${violation.description}</p>
-                ${violation.element ? `<code class="violation-element">${violation.element}</code>` : ''}
-                ${violation.suggestion ? `<p class="violation-suggestion"><strong>Suggestion:</strong> ${violation.suggestion}</p>` : ''}
-            </div>
-        `).join('');
+            `;
+            return;
+        }
+
+        const violationsHtml = violations.map(v => {
+            const safeElement = v.element ? v.element.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+            const formattedRule = v.rule ? v.rule.replace(/_/g, ' ').toUpperCase() : 'UNKNOWN RULE';
+            const sev = (v.severity || '').toLowerCase();
+
+            return `
+                <div class="violation-card sev-${sev}">
+                    <div class="violation-header">
+                        <div class="v-rule">${formattedRule}</div>
+                        <div class="v-badge">${sev}</div>
+                    </div>
+                    <div class="v-message">${v.message || ''}</div>
+                    ${safeElement ? `
+                    <div class="v-element-wrapper">
+                        <pre class="v-element">${safeElement}</pre>
+                    </div>` : ''}
+                    ${v.suggestion ? `<div class="v-message" style="margin-top: 0.8rem;"><strong>Suggestion:</strong> ${v.suggestion}</div>` : ''}
+                </div>
+            `;
+        }).join('');
 
         elements.violationsList.innerHTML = violationsHtml;
     }
 
-    function saveAuditToHistory(data, url) {
-        if (!isAuthenticated()) return;
-
-        const userId = state.auth.currentUser.uid;
-        const historyKey = `${LOCAL_HISTORY_PREFIX}${userId}`;
-        const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-
-        const auditEntry = {
-            id: Date.now().toString(),
-            url,
-            timestamp: new Date().toISOString(),
-            score: data.score,
-            violationsCount: data.violations?.length || 0,
-            data
-        };
-
-        history.unshift(auditEntry);
-        if (history.length > 50) history.splice(50); // Keep only last 50
-
-        localStorage.setItem(historyKey, JSON.stringify(history));
-    }
-
     function fetchAndRenderHistory() {
-        if (!isAuthenticated()) return;
-
-        const userId = state.auth.currentUser.uid;
-        const historyKey = `${LOCAL_HISTORY_PREFIX}${userId}`;
-        const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-
-        renderHistory(history);
+        AUTH.apiGet('/api/history')
+            .then(responseData => {
+                const history = responseData.data || [];
+                renderHistory(history);
+            })
+            .catch(() => {
+                elements.historyList.innerHTML = '<p class="empty-state">Failed to load history.</p>';
+            });
     }
 
     function renderHistory(history) {
@@ -498,13 +363,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="history-url">${item.url}</div>
                     <div class="history-meta">
                         <span class="history-score">Score: ${item.score || 'N/A'}</span>
-                        <span class="history-violations">Issues: ${item.violationsCount}</span>
+                        <span class="history-violations">Issues: ${item.total_issues}</span>
                         <span class="history-date">${new Date(item.timestamp).toLocaleDateString()}</span>
                     </div>
                 </div>
                 <div class="history-actions">
-                    <button class="btn btn-ghost btn-sm" data-action="rerun" data-id="${item.id}">Rerun</button>
-                    <button class="btn btn-ghost btn-sm" data-action="delete" data-id="${item.id}">Delete</button>
+                    <button class="btn btn-ghost btn-sm" onclick="window.location.hash='#dashboard'; document.getElementById('urlInput').value='${item.url}'">Rerun</button>
                 </div>
             </div>
         `).join('');
@@ -512,35 +376,31 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.historyList.innerHTML = historyHtml;
     }
 
-    function rerunSavedAudit(itemId) {
-        if (!isAuthenticated()) return;
-
-        const userId = state.auth.currentUser.uid;
-        const historyKey = `${LOCAL_HISTORY_PREFIX}${userId}`;
-        const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-        const item = history.find(h => h.id === itemId);
-
-        if (item) {
-            elements.urlInput.value = item.url;
-            navigateTo('dashboard');
-            runAudit(item.url);
+    function downloadPdfReport(auditId) {
+        if (!auditId) {
+            alert('No audit ID available for PDF download.');
+            return;
         }
-    }
-
-    function deleteSavedAudit(itemId) {
-        if (!isAuthenticated()) return;
-
-        const userId = state.auth.currentUser.uid;
-        const historyKey = `${LOCAL_HISTORY_PREFIX}${userId}`;
-        let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-        history = history.filter(h => h.id !== itemId);
-
-        localStorage.setItem(historyKey, JSON.stringify(history));
-        fetchAndRenderHistory();
-    }
-
-    function downloadPdfReport(data, url) {
-        // This would integrate with the PDF generation endpoint
-        alert('PDF report download would be implemented here with the backend PDF endpoint.');
+        const token = AUTH.getToken();
+        const url = `${AUTH.API_URL}/api/report/${auditId}`;
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `audit_report_${auditId}.pdf`);
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+        xhr.responseType = 'blob';
+        xhr.onload = function () {
+            if (this.status === 200) {
+                const blob = this.response;
+                const blobUrl = window.URL.createObjectURL(blob);
+                link.href = blobUrl;
+                link.click();
+                window.URL.revokeObjectURL(blobUrl);
+            } else {
+                alert('Failed to download PDF report.');
+            }
+        };
+        xhr.send();
     }
 });

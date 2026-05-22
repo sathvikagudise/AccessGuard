@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — AccessGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-shell">
+        <div class="auth-card">
+            <a href="/" class="auth-brand">
+                <span class="brand-mark">AG</span>
+                <span class="brand-title">AccessGuard</span>
+            </a>
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Sign in to access your dashboard</p>
+
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                <div id="authError" class="auth-error hidden"></div>
+                <button type="submit" id="loginBtn" class="btn btn-primary btn-block">Sign In</button>
+            </form>
+
+            <div class="auth-divider"><span>or continue with</span></div>
+
+            <div id="googleButton" class="google-btn-wrapper"></div>
+
+            <p class="auth-footer-text">Don't have an account? <a href="/signup.html">Sign up</a></p>
+        </div>
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script>
+        window.GOOGLE_CLIENT_ID = '32776571162-ijcnfcjmtud52ujhr91r92sfktiaprqh.apps.googleusercontent.com';
+    </script>
+    <script src="./auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AUTH.redirectIfAuthenticated();
+
+            const form = document.getElementById('loginForm');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('authError');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorEl.classList.add('hidden');
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Signing in...';
+
+                try {
+                    await AUTH.login(email.value, password.value);
+                    window.location.href = '/dashboard.html';
+                } catch (err) {
+                    errorEl.textContent = err.message;
+                    errorEl.classList.remove('hidden');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Sign In';
+                }
+            });
+
+            AUTH.initGoogleSignIn('googleButton', (err, result) => {
+                if (err) {
+                    errorEl.textContent = 'Google sign-in failed. Please try again.';
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
+                window.location.href = '/dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,170 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AccessGuard — Real-time Accessibility Audits</title>
-    <meta name="description" content="AccessGuard is a real-time deterministic web accessibility auditing and context-aware HTML remediation platform.">
+    <title>AccessGuard — Web Accessibility Audits</title>
+    <meta name="description" content="Real-time web accessibility auditing platform.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div class="page-shell">
-        <header class="site-header">
-            <div class="brand-row">
-                <a href="#home" class="brand-link">
-                    <span class="brand-mark">AG</span>
-                    <span class="brand-title">AccessGuard</span>
-                </a>
-                <span class="brand-subtitle">Real-time accessibility auditing</span>
+    <div class="splash-shell">
+        <div class="splash-content">
+            <div class="splash-brand">
+                <div class="splash-brand-mark">AG</div>
+                <h1>AccessGuard</h1>
+                <p class="splash-tagline">Real-time web accessibility audits for modern teams</p>
             </div>
 
-            <button id="mobileMenuBtn" class="nav-toggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <nav class="site-nav" id="siteNav">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="dashboard.html" class="nav-link nav-protected">Dashboard</a>
-                <a href="https://github.com/" target="_blank" rel="noreferrer" class="nav-link nav-external">GitHub</a>
-            </nav>
-
-            <div class="auth-actions">
-                <span id="authAvatar" class="auth-avatar hidden"></span>
-                <span id="authWelcome" class="auth-welcome hidden"></span>
-                <button id="authButton" class="btn btn-primary">Sign in with Google</button>
+            <div class="splash-features">
+                <div class="s-feature">
+                    <div class="s-feature-icon ion-wcag">W</div>
+                    <div class="s-feature-name">WCAG Detection</div>
+                    <div class="s-feature-desc">Real-time scanning across 5+ accessibility rule categories</div>
+                </div>
+                <div class="s-feature">
+                    <div class="s-feature-icon ion-fix">R</div>
+                    <div class="s-feature-name">Smart Remediation</div>
+                    <div class="s-feature-desc">AI-driven HTML fixes with before and after previews</div>
+                </div>
+                <div class="s-feature">
+                    <div class="s-feature-icon ion-score">S</div>
+                    <div class="s-feature-name">Severity Scoring</div>
+                    <div class="s-feature-desc">Weighted 0–100 score with severity breakdown</div>
+                </div>
+                <div class="s-feature">
+                    <div class="s-feature-icon ion-pdf">P</div>
+                    <div class="s-feature-name">PDF Reports</div>
+                    <div class="s-feature-desc">One-click export of branded professional reports</div>
+                </div>
+                <div class="s-feature">
+                    <div class="s-feature-icon ion-history">H</div>
+                    <div class="s-feature-name">Audit History</div>
+                    <div class="s-feature-desc">Persistent per-user history with re-run support</div>
+                </div>
             </div>
-        </header>
 
-        <main>
-            <section id="home" class="hero-section route-section">
-                <div class="hero-copy">
-                    <span class="eyebrow">Real-time accessibility intelligence</span>
-                    <h1>AccessGuard</h1>
-                    <p>Real-time deterministic web accessibility auditing and context-aware HTML remediation platform.</p>
-                    <div class="hero-actions">
-                        <a href="dashboard.html" id="heroStartBtn" class="btn btn-primary">Start Audit</a>
-                        <a href="#features" class="btn btn-secondary">View Features</a>
-                        <a href="https://github.com/" class="btn btn-ghost" target="_blank" rel="noreferrer">GitHub Repository</a>
-                    </div>
-                    <div class="hero-badges">
-                        <span>WCAG aligned</span>
-                        <span>PDF reports</span>
-                        <span>FastAPI backend</span>
-                    </div>
-                </div>
-
-                <aside class="hero-panel glass-panel">
-                    <div class="panel-heading">
-                        <div>
-                            <p class="panel-label">Secure access</p>
-                            <h2>Sign in to save history and unlock the dashboard.</h2>
-                        </div>
-                        <div class="panel-pill">Firebase Auth</div>
-                    </div>
-                    <p class="panel-copy">Use Google sign-in to keep your audits private, access your dashboard, and prepare for future user-specific reports.</p>
-                    <button id="heroSignInBtn" class="btn btn-primary btn-block">Continue with Google</button>
-                    <div class="panel-note">Your session is persisted securely and compatible with Vercel deployments.</div>
-                </aside>
-            </section>
-
-            <section id="features" class="features-section route-section">
-                <div class="section-heading">
-                    <p class="section-eyebrow">Core capabilities</p>
-                    <h2>Everything you need for fast, production-grade accessibility audits.</h2>
-                </div>
-                <div class="feature-grid">
-                    <article class="feature-card">
-                        <div class="feature-icon icon-dom">DOM</div>
-                        <h3>Real-Time DOM Analysis</h3>
-                        <p>Inspect live page structure and detect accessibility problems in the rendered HTML.</p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon icon-wcag">WCAG</div>
-                        <h3>WCAG Accessibility Detection</h3>
-                        <p>Surface issues with meaningful severity labels and compliance-focused guidance.</p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon icon-remediation">Fix</div>
-                        <h3>Context-Aware HTML Remediation</h3>
-                        <p>Deliver remediation suggestions that preserve page structure and developer context.</p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon icon-compare">Compare</div>
-                        <h3>Before/After HTML Transformation</h3>
-                        <p>Understand fix impact with side-by-side remediation previews.</p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon icon-report">PDF</div>
-                        <h3>PDF Report Generation</h3>
-                        <p>Export polished reports for stakeholders and compliance reviews.</p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon icon-score">Score</div>
-                        <h3>Adaptive Accessibility Scoring</h3>
-                        <p>Track score improvements over time and prioritize the highest impact fixes.</p>
-                    </article>
-                </div>
-            </section>
-
-            <section id="about" class="about-section route-section">
-                <div class="about-panel glass-panel">
-                    <h2>Designed for modern product teams</h2>
-                    <p>AccessGuard combines deterministic audits, remediation awareness, and audit reporting without changing your existing backend or deployment flow.</p>
-                </div>
-                <div class="about-grid">
-                    <div class="about-card">
-                        <h3>Reliable backend integration</h3>
-                        <p>Preserves your Render API endpoints and keeps every request keyed to <code>https://accessguard-ksri.onrender.com</code>.</p>
-                    </div>
-                    <div class="about-card">
-                        <h3>Clean frontend architecture</h3>
-                        <p>Modular routes, auth state management, and local history storage built for future backend user support.</p>
-                    </div>
-                    <div class="about-card">
-                        <h3>Accessible, polished UI</h3>
-                        <p>Dark/light hybrid styling, responsive design, and smooth transitions for a recruiter-friendly experience.</p>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="site-footer">
-            <div>
-                <strong>AccessGuard</strong> · Real-time accessibility audits with developer-friendly remediation.
+            <div class="splash-actions">
+                <a href="/login.html" class="btn btn-primary btn-lg">Get Started</a>
+                <a href="/signup.html" class="btn btn-secondary btn-lg">Create Account</a>
             </div>
-            <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-            </div>
+        </div>
+
+        <footer class="splash-footer">
+            <span>Questions? Contact: <a href="mailto:sathvikayadav3@gmail.com">sathvikayadav3@gmail.com</a></span>
         </footer>
     </div>
-
-    <div id="authModal" class="modal hidden" aria-hidden="true">
-        <div class="modal-panel">
-            <button id="closeAuthModal" class="modal-close" aria-label="Close modal">×</button>
-            <div class="modal-header">
-                <p class="modal-eyebrow">Secure sign in</p>
-                <h2>Continue with Google</h2>
-            </div>
-            <p class="modal-copy">Authenticate to access the full AccessGuard dashboard, save audit history, and download reports.</p>
-            <button id="modalSignInBtn" class="btn btn-primary btn-block">Sign in with Google</button>
-            <p class="modal-note">Your credentials are handled by Firebase and kept out of the backend audit pipeline.</p>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    <script type="module" src="./firebase-config.js"></script>
-    <script type="module" src="./app.js"></script>
 </body>
-
 </html>

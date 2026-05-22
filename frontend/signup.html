@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — AccessGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-shell">
+        <div class="auth-card">
+            <a href="/" class="auth-brand">
+                <span class="brand-mark">AG</span>
+                <span class="brand-title">AccessGuard</span>
+            </a>
+            <h2>Create your account</h2>
+            <p class="auth-subtitle">Start auditing websites for accessibility</p>
+
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Your name" required autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password (min 6 chars)" required minlength="6" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required autocomplete="new-password">
+                </div>
+                <div id="authError" class="auth-error hidden"></div>
+                <button type="submit" id="signupBtn" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+
+            <div class="auth-divider"><span>or continue with</span></div>
+
+            <div id="googleButton" class="google-btn-wrapper"></div>
+
+            <p class="auth-footer-text">Already have an account? <a href="/login.html">Sign in</a></p>
+        </div>
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script>
+        window.GOOGLE_CLIENT_ID = '32776571162-ijcnfcjmtud52ujhr91r92sfktiaprqh.apps.googleusercontent.com';
+    </script>
+    <script src="./auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AUTH.redirectIfAuthenticated();
+
+            const form = document.getElementById('signupForm');
+            const name = document.getElementById('name');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const signupBtn = document.getElementById('signupBtn');
+            const errorEl = document.getElementById('authError');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorEl.classList.add('hidden');
+
+                if (password.value !== confirmPassword.value) {
+                    errorEl.textContent = 'Passwords do not match';
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
+
+                signupBtn.disabled = true;
+                signupBtn.textContent = 'Creating account...';
+
+                try {
+                    await AUTH.register(name.value, email.value, password.value);
+                    window.location.href = '/dashboard.html';
+                } catch (err) {
+                    errorEl.textContent = err.message;
+                    errorEl.classList.remove('hidden');
+                    signupBtn.disabled = false;
+                    signupBtn.textContent = 'Create Account';
+                }
+            });
+
+            AUTH.initGoogleSignIn('googleButton', (err, result) => {
+                if (err) {
+                    errorEl.textContent = 'Google sign-in failed. Please try again.';
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
+                window.location.href = '/dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

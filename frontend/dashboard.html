@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="page-shell">
         <header class="site-header">
@@ -30,17 +28,14 @@
             </button>
 
             <nav class="site-nav" id="siteNav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="index.html#features" class="nav-link">Features</a>
                 <a href="#dashboard" class="nav-link active">Dashboard</a>
                 <a href="#history" class="nav-link">History</a>
-                <a href="https://github.com/" target="_blank" rel="noreferrer" class="nav-link nav-external">GitHub</a>
             </nav>
 
             <div class="auth-actions">
                 <span id="authAvatar" class="auth-avatar hidden"></span>
                 <span id="authWelcome" class="auth-welcome hidden"></span>
-                <button id="authButton" class="btn btn-primary">Sign in with Google</button>
+                <button id="authButton" class="btn btn-primary">Logout</button>
             </div>
         </header>
 
@@ -176,29 +171,12 @@
             </div>
             <div class="footer-links">
                 <a href="index.html">Home</a>
-                <a href="index.html#about">About</a>
                 <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
             </div>
         </footer>
     </div>
 
-    <div id="authModal" class="modal hidden" aria-hidden="true">
-        <div class="modal-panel">
-            <button id="closeAuthModal" class="modal-close" aria-label="Close modal">×</button>
-            <div class="modal-header">
-                <p class="modal-eyebrow">Secure sign in</p>
-                <h2>Continue with Google</h2>
-            </div>
-            <p class="modal-copy">Authenticate to access the full AccessGuard dashboard, save audit history, and download reports.</p>
-            <button id="modalSignInBtn" class="btn btn-primary btn-block">Sign in with Google</button>
-            <p class="modal-note">Your credentials are handled by Firebase and kept out of the backend audit pipeline.</p>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    <script type="module" src="./firebase-config.js"></script>
+    <script src="./auth.js"></script>
     <script type="module" src="./dashboard.js"></script>
 </body>
-
 </html>
