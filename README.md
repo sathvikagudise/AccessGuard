@@ -216,7 +216,7 @@ This project is licensed under the MIT License.
 Gudise Sathvika
 
 - GitHub: https://github.com/sathvikagudise
-- LinkedIn: https://linkedin.com/in/sathvikagudise
+- LinkedIn: https://linkedin.com/in/sathvikayadav
 - Email: sathvikayadav3@gmail.com
 
 ---
