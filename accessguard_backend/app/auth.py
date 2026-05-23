@@ -34,15 +34,14 @@ async def verify_google_token(google_token: str) -> Optional[dict]:
     if not GOOGLE_CLIENT_ID:
         return None
     try:
-        import httpx
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(
-                "https://oauth2.googleapis.com/tokeninfo",
-                params={"id_token": google_token},
-            )
-            if resp.status_code != 200:
+        import json, urllib.request, urllib.parse
+        params = urllib.parse.urlencode({"id_token": google_token})
+        url = f"https://oauth2.googleapis.com/tokeninfo?{params}"
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            if resp.status != 200:
                 return None
-            data = resp.json()
+            data = json.loads(resp.read().decode())
             if data.get("aud") != GOOGLE_CLIENT_ID:
                 return None
             if data.get("sub") is None:
