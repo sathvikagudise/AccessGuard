@@ -32,20 +32,26 @@ def verify_access_token(token: str) -> Optional[dict]:
 
 async def verify_google_token(google_token: str) -> Optional[dict]:
     if not GOOGLE_CLIENT_ID:
+        print("DEBUG: GOOGLE_CLIENT_ID is not set")
         return None
     try:
-        import json, urllib.request, urllib.parse
+        import json, urllib.request, urllib.parse, ssl
         params = urllib.parse.urlencode({"id_token": google_token})
         url = f"https://oauth2.googleapis.com/tokeninfo?{params}"
+        ctx = ssl.create_default_context()
         req = urllib.request.Request(url)
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
             if resp.status != 200:
+                print(f"DEBUG: Google tokeninfo returned {resp.status}")
                 return None
             data = json.loads(resp.read().decode())
             if data.get("aud") != GOOGLE_CLIENT_ID:
+                print(f"DEBUG: aud mismatch: {data.get('aud')} != {GOOGLE_CLIENT_ID}")
                 return None
             if data.get("sub") is None:
+                print("DEBUG: sub is None")
                 return None
             return data
-    except Exception:
+    except Exception as e:
+        print(f"DEBUG: Google verify exception: {e}")
         return None
