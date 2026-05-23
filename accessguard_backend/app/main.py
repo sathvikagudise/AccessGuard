@@ -1,7 +1,9 @@
-import hashlib, os
+import hashlib, os, logging
 from dotenv import load_dotenv
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, Header
+
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", ".env"))
 from fastapi.middleware.cors import CORSMiddleware

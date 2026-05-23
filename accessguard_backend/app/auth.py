@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_DAYS, GOOGLE_CLIENT_ID
+
+logger = logging.getLogger(__name__)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -32,7 +35,7 @@ def verify_access_token(token: str) -> Optional[dict]:
 
 async def verify_google_token(google_token: str) -> Optional[dict]:
     if not GOOGLE_CLIENT_ID:
-        print("DEBUG: GOOGLE_CLIENT_ID is not set")
+        logger.warning("GOOGLE_CLIENT_ID is not set")
         return None
     try:
         import json, urllib.request, urllib.parse, ssl
@@ -42,16 +45,16 @@ async def verify_google_token(google_token: str) -> Optional[dict]:
         req = urllib.request.Request(url)
         with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
             if resp.status != 200:
-                print(f"DEBUG: Google tokeninfo returned {resp.status}")
+                logger.warning("Google tokeninfo returned status %s", resp.status)
                 return None
             data = json.loads(resp.read().decode())
             if data.get("aud") != GOOGLE_CLIENT_ID:
-                print(f"DEBUG: aud mismatch: {data.get('aud')} != {GOOGLE_CLIENT_ID}")
+                logger.warning("aud mismatch: %s != %s", data.get("aud"), GOOGLE_CLIENT_ID)
                 return None
             if data.get("sub") is None:
-                print("DEBUG: sub is None")
+                logger.warning("sub is None in Google token response")
                 return None
             return data
     except Exception as e:
-        print(f"DEBUG: Google verify exception: {e}")
+        logger.warning("Google verify exception: %s", e)
         return None
