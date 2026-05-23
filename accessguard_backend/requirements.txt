@@ -9,7 +9,6 @@ pymysql
 passlib
 bcrypt==4.1.3
 python-jose[cryptography]
-google-auth
 python-multipart
 python-dotenv
 email-validator

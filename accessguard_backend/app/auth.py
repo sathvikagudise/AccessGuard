@@ -34,9 +34,19 @@ async def verify_google_token(google_token: str) -> Optional[dict]:
     if not GOOGLE_CLIENT_ID:
         return None
     try:
-        from google.oauth2 import id_token
-        from google.auth.transport import requests
-        idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
-        return idinfo
+        import httpx
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(
+                "https://oauth2.googleapis.com/tokeninfo",
+                params={"id_token": google_token},
+            )
+            if resp.status_code != 200:
+                return None
+            data = resp.json()
+            if data.get("aud") != GOOGLE_CLIENT_ID:
+                return None
+            if data.get("sub") is None:
+                return None
+            return data
     except Exception:
         return None
