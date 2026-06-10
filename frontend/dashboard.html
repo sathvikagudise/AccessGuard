@@ -33,6 +33,9 @@
             </nav>
 
             <div class="auth-actions">
+                <button id="themeToggle" class="btn btn-ghost" title="Toggle theme" style="padding:0.5rem;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <span id="themeIcon">🌙</span>
+                </button>
                 <span id="authAvatar" class="auth-avatar hidden"></span>
                 <span id="authWelcome" class="auth-welcome hidden"></span>
                 <button id="authButton" class="btn btn-primary">Logout</button>
@@ -123,7 +126,7 @@
                         <div class="score-circle">
                             <svg viewBox="0 0 36 36" class="circular-chart">
                                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path id="scoreCircle" class="circle" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path id="scoreCircle" class="circle" stroke-dasharray="100" stroke-dashoffset="100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                             </svg>
                             <div class="score-text"><span id="scoreValue">0</span></div>
                         </div>

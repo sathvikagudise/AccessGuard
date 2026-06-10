@@ -81,6 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         elements.batchBtn.addEventListener('click', runBatchAudit);
         elements.refreshHistoryBtn.addEventListener('click', fetchAndRenderHistory);
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const savedTheme = localStorage.getItem('ag_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeIcon.textContent = savedTheme === 'light' ? '☀️' : '🌙';
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('ag_theme', next);
+            themeIcon.textContent = next === 'light' ? '☀️' : '🌙';
+        });
     }
 
     function route() {
@@ -245,8 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.downloadPdfBtn.classList.add('hidden');
 
         if (data.score !== undefined) {
-            elements.scoreValue.textContent = data.score;
-            elements.scoreCircle.style.strokeDasharray = `${data.score}, 100`;
+            const score = Math.min(100, Math.max(0, Math.round(Number(data.score))));
+            elements.scoreValue.textContent = score;
+            const r = 15.9155;
+            const c = 2 * Math.PI * r;
+            const offset = c - (score / 100) * c;
+            elements.scoreCircle.style.strokeDasharray = c;
+            elements.scoreCircle.style.strokeDashoffset = offset;
             elements.scoreCard.classList.remove('hidden');
         }
 

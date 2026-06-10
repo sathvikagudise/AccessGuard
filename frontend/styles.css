@@ -14,6 +14,19 @@
     --shadow: 0 40px 120px rgba(0, 0, 0, 0.25);
 }
 
+[data-theme="light"] {
+    --bg: #f8fafc;
+    --surface: rgba(255, 255, 255, 0.95);
+    --surface-soft: rgba(241, 245, 249, 0.9);
+    --text: #0f172a;
+    --muted: #64748b;
+    --muted-soft: #475569;
+    --accent: #4f46e5;
+    --accent-strong: #7c3aed;
+    --border: rgba(15, 23, 42, 0.1);
+    --shadow: 0 40px 120px rgba(0, 0, 0, 0.08);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -27,11 +40,22 @@ html {
 
 body {
     min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+[data-theme="dark"] body,
+body:not([data-theme="light"]) {
     background: radial-gradient(circle at 20% 10%, rgba(91, 139, 255, 0.16), transparent 25%),
                 radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.12), transparent 22%),
                 linear-gradient(180deg, #06091a 0%, #070b18 100%);
-    color: var(--text);
-    overflow-x: hidden;
+}
+
+[data-theme="light"] body {
+    background: radial-gradient(circle at 20% 10%, rgba(79, 70, 229, 0.06), transparent 25%),
+                radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.04), transparent 22%),
+                linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 a {
@@ -61,9 +85,9 @@ textarea {
     gap: 1rem;
     padding: 1rem 1.25rem;
     margin: 0 auto 2rem;
-    background: rgba(6, 9, 22, 0.9);
+    background: var(--surface);
     backdrop-filter: blur(18px);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
     border-radius: 24px;
 }
 
@@ -563,7 +587,9 @@ textarea {
     fill: none;
     stroke-width: 3.5;
     stroke-linecap: round;
-    transition: stroke-dasharray 1.2s ease, stroke 0.3s ease;
+    transition: stroke-dashoffset 1.2s ease, stroke 0.3s ease;
+    transform: rotate(-90deg);
+    transform-origin: 18px 18px;
 }
 
 .score-text {
