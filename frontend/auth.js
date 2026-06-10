@@ -94,25 +94,33 @@ window.AUTH = (() => {
     }
 
     function initGoogleSignIn(buttonId, callback) {
-        if (typeof google === 'undefined' || !google.accounts) {
-            console.warn('Google Identity Services not loaded');
-            return;
+        const el = document.getElementById(buttonId);
+        if (!el) return;
+
+        function tryRender() {
+            if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+                setTimeout(tryRender, 300);
+                return;
+            }
+            google.accounts.id.initialize({
+                client_id: window.GOOGLE_CLIENT_ID,
+                callback: async (response) => {
+                    try {
+                        const result = await googleAuth(response.credential);
+                        if (callback) callback(null, result);
+                    } catch (err) {
+                        if (callback) callback(err, null);
+                    }
+                },
+            });
+            google.accounts.id.renderButton(el, {
+                theme: 'outline',
+                size: 'large',
+                width: 320,
+                shape: 'pill',
+            });
         }
-        google.accounts.id.initialize({
-            client_id: window.GOOGLE_CLIENT_ID,
-            callback: async (response) => {
-                try {
-                    const result = await googleAuth(response.credential);
-                    if (callback) callback(null, result);
-                } catch (err) {
-                    if (callback) callback(err, null);
-                }
-            },
-        });
-        google.accounts.id.renderButton(
-            document.getElementById(buttonId),
-            { theme: 'outline', size: 'large', width: 320, shape: 'pill' }
-        );
+        tryRender();
     }
 
     return {
