@@ -3,59 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AccessGuard — Web Accessibility Audits</title>
-    <meta name="description" content="Real-time web accessibility auditing platform.">
+    <title>AccessGuard — Web Accessibility Intelligence</title>
+    <meta name="description" content="Real-time web accessibility auditing platform powered by AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="splash-shell">
-        <div class="splash-content">
-            <div class="splash-brand">
-                <div class="splash-brand-mark">AG</div>
-                <h1>AccessGuard</h1>
-                <p class="splash-tagline">Real-time web accessibility audits for modern teams</p>
-            </div>
+    <!-- Animated background particles -->
+    <div class="bg-particles">
+        <div class="particle p1"></div>
+        <div class="particle p2"></div>
+        <div class="particle p3"></div>
+        <div class="particle p4"></div>
+        <div class="particle p5"></div>
+        <div class="particle p6"></div>
+    </div>
 
-            <div class="splash-features">
-                <div class="s-feature">
-                    <div class="s-feature-icon ion-wcag">W</div>
-                    <div class="s-feature-name">WCAG Detection</div>
-                    <div class="s-feature-desc">Real-time scanning across 5+ accessibility rule categories</div>
-                </div>
-                <div class="s-feature">
-                    <div class="s-feature-icon ion-fix">R</div>
-                    <div class="s-feature-name">Smart Remediation</div>
-                    <div class="s-feature-desc">AI-driven HTML fixes with before and after previews</div>
-                </div>
-                <div class="s-feature">
-                    <div class="s-feature-icon ion-score">S</div>
-                    <div class="s-feature-name">Severity Scoring</div>
-                    <div class="s-feature-desc">Weighted 0–100 score with severity breakdown</div>
-                </div>
-                <div class="s-feature">
-                    <div class="s-feature-icon ion-pdf">P</div>
-                    <div class="s-feature-name">PDF Reports</div>
-                    <div class="s-feature-desc">One-click export of branded professional reports</div>
-                </div>
-                <div class="s-feature">
-                    <div class="s-feature-icon ion-history">H</div>
-                    <div class="s-feature-name">Audit History</div>
-                    <div class="s-feature-desc">Persistent per-user history with re-run support</div>
-                </div>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <div class="brand-mark">AG</div>
+                <span class="brand-name">AccessGuard</span>
             </div>
-
-            <div class="splash-actions">
-                <a href="/login.html" class="btn btn-primary btn-lg">Get Started</a>
-                <a href="/signup.html" class="btn btn-secondary btn-lg">Create Account</a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="/login.html" class="nav-link nav-cta">Dashboard</a>
+            </div>
+            <div class="nav-auth">
+                <a href="/login.html" class="btn btn-ghost btn-sm">Sign In</a>
+                <a href="/signup.html" class="btn btn-primary btn-sm">Get Started</a>
             </div>
         </div>
+    </nav>
 
-        <footer class="splash-footer">
-            <span>Questions? Contact: <a href="mailto:sathvikayadav3@gmail.com">sathvikayadav3@gmail.com</a></span>
-        </footer>
-    </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-grid">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    AI-Powered Accessibility
+                </div>
+                <h1 class="hero-title">
+                    Make the web<br>
+                    <span class="gradient-text">accessible for everyone</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Real-time WCAG compliance audits, AI-driven remediation suggestions,<br>
+                    and comprehensive accessibility reports — all in one platform.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/signup.html" class="btn btn-primary btn-lg pulse-glow">
+                        Start Free Audit
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                    <a href="#features" class="btn btn-secondary btn-lg">
+                        Explore Features
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">5+</span>
+                        <span class="hero-stat-label">WCAG Rule Categories</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">&lt;3s</span>
+                        <span class="hero-stat-label">Avg. Audit Time</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">100</span>
+                        <span class="hero-stat-label">Accessibility Score</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-preview-card">
+                    <div class="preview-header">
+                        <div class="preview-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span class="preview-url">accessguard.io/audit</span>
+                    </div>
+                    <div class="preview-body">
+                        <div class="preview-score">
+                            <svg class="preview-ring" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="url(#scoreGrad)" stroke-width="6"
+                                    stroke-dasharray="339.292" stroke-dashoffset="67.858" stroke-linecap="round"
+                                    transform="rotate(-90 60 60)"/>
+                                <defs>
+                                    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#5b8bff"/>
+                                        <stop offset="100%" stop-color="#8b5cf6"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <span class="preview-score-text">82</span>
+                        </div>
+                        <div class="preview-details">
+                            <div class="preview-detail-item">
+                                <span class="detail-label">Violations</span>
+                                <span class="detail-value critical">12</span>
+                            </div>
+                            <div class="preview-detail-item">
+                                <span class="detail-label">Warnings</span>
+                                <span class="detail-value warning">28</span>
+                            </div>
+                            <div class="preview-detail-item">
+                                <span class="detail-label">Passed</span>
+                                <span class="detail-value pass">156</span>
+                            </div>
+                            <div class="preview-detail-item">
+                                <span class="detail-label">Elements</span>
+                                <span class="detail-value">196</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted/Stats Bar -->
+    <section class="trust-bar">
+        <div class="trust-inner">
+            <span class="trust-label">Built with</span>
+            <div class="trust-icons">
+                <span class="trust-icon">Python</span>
+                <span class="trust-icon">FastAPI</span>
+                <span class="trust-icon">React</span>
+                <span class="trust-icon">Docker</span>
+                <span class="trust-icon">SQLite</span>
+                <span class="trust-icon">Firebase</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section features">
+        <div class="section-header">
+            <span class="section-eyebrow">Features</span>
+            <h2 class="section-title">Everything you need for<br><span class="gradient-text">accessibility compliance</span></h2>
+            <p class="section-desc">
+                From real-time scanning to AI-powered fixes, AccessGuard covers the full audit lifecycle.
+            </p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-scan">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+                </div>
+                <h3 class="feature-title">Real-Time DOM Scanning</h3>
+                <p class="feature-desc">Extracts and analyzes live DOM elements against WCAG 2.1 standards in under 3 seconds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-wand">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5L20 9l-9 9-5.5-5.5z"/><line x1="9" y1="14" x2="15" y2="8"/><line x1="3" y1="21" x2="21" y2="3"/></svg>
+                </div>
+                <h3 class="feature-title">AI Remediation</h3>
+                <p class="feature-desc">Context-aware HTML fix suggestions with before/after previews for every violation.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-chart">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+                <h3 class="feature-title">Severity Scoring</h3>
+                <p class="feature-desc">Weighted 0–100 accessibility score with categorized severity breakdown.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-file">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+                </div>
+                <h3 class="feature-title">PDF Reports</h3>
+                <p class="feature-desc">One-click export of branded, professional accessibility audit reports.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-clock">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3 class="feature-title">Audit History</h3>
+                <p class="feature-desc">Persistent per-user history with re-run support and trend tracking.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-shield">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3 class="feature-title">WCAG Compliance</h3>
+                <p class="feature-desc">Covers A, AA, and AAA success criteria across all guideline categories.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section steps">
+        <div class="section-header">
+            <span class="section-eyebrow">How It Works</span>
+            <h2 class="section-title">Three steps to an<br><span class="gradient-text">accessible website</span></h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <h3 class="step-title">Submit Your URL</h3>
+                <p class="step-desc">Enter any public website URL into the audit dashboard.</p>
+            </div>
+            <div class="step-connector">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <h3 class="step-title">AI Scans & Analyzes</h3>
+                <p class="step-desc">Our engine extracts DOM, checks WCAG rules, and scores accessibility.</p>
+            </div>
+            <div class="step-connector">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <h3 class="step-title">Get Fixes & Reports</h3>
+                <p class="step-desc">View violations, apply AI-suggested fixes, and export PDF reports.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta">
+        <div class="cta-card">
+            <h2 class="cta-title">Ready to make your site accessible?</h2>
+            <p class="cta-desc">Start with a free audit — no credit card required.</p>
+            <div class="cta-buttons">
+                <a href="/signup.html" class="btn btn-primary btn-lg pulse-glow">Start Free Audit</a>
+                <a href="/login.html" class="btn btn-secondary btn-lg">Sign In</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="brand-mark">AG</div>
+                <span class="brand-name">AccessGuard</span>
+            </div>
+            <div class="footer-links">
+                <a href="mailto:sathvikayadav3@gmail.com" class="footer-link">Contact</a>
+                <a href="https://github.com/sathvikagudise/AccessGuard" class="footer-link">GitHub</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 AccessGuard. Built with accessibility in mind.
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
