@@ -79,7 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
             handleAuditSubmit();
         });
 
-        elements.batchBtn.addEventListener('click', runBatchAudit);
+        elements.batchBtn.addEventListener('click', () => {
+            const batchUrls = elements.batchInput.value.trim().split('\n').filter(u => u.trim());
+            if (batchUrls.length === 0) return;
+            runBatchAudit(batchUrls);
+        });
         elements.refreshHistoryBtn.addEventListener('click', fetchAndRenderHistory);
 
         // Theme toggle
